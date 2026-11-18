@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+{% block title %}Matching Donors for {{ blood_request.request_id }} | BloodConnect{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+        <div>
+            <span class="text-danger small fw-bold text-uppercase">Intelligent Discovery Results</span>
+            <h2 class="fw-bold mb-0">Matching Donors for {{ blood_request.request_id }}</h2>
+            <div class="text-muted small">
+                Patient: <strong>{{ blood_request.patient_name }}</strong> &bull;
+                Target Blood Group: <span class="badge bg-danger">{{ blood_request.blood_group }}</span> &bull;
+                Hospital: <strong>{{ blood_request.hospital_name }}</strong> ({{ blood_request.city }})
+            </div>
+        </div>
+
+        <div class="d-flex gap-2">
+            <!-- BROADCAST ALL FORM -->
+            <form method="post" action="{% url 'contact_all_donors' blood_request.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger" onclick="return confirm('Broadcast request to all currently available matching donors in the area?');">
+                    <i class="fas fa-bullhorn me-1"></i> Broadcast to All Available
+                </button>
+            </form>
+            <a href="{% url 'track_request' blood_request.id %}" class="btn btn-outline-secondary">
+                <i class="fas fa-timeline me-1"></i> Track Progress
+            </a>
+        </div>
+    </div>
+
+    <!-- MEDICAL DISCLAIMER -->
+    <div class="medical-disclaimer-box mb-4">
+        <i class="fas fa-shield-halved"></i>
+        <div>
+            <strong>Mandatory Medical Notice:</strong> {{ disclaimer }}
+        </div>
+    </div>
+
+    <!-- FILTER TOOLBAR -->
+    <div class="bc-card p-3 mb-4 bg-white d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <div class="d-flex align-items-center gap-2">
+            <span class="fw-semibold small text-muted">Found: <strong>{{ total_matches }}</strong> Potential Matches</span>
+        </div>
+        <div class="d-flex gap-2 align-items-center">
+            <span class="small text-muted">Filter:</span>
+            {% if filter_available_only %}
+                <a href="?available_only=false" class="btn btn-sm btn-outline-secondary">Show All Compatible</a>
+                <span class="badge bg-success">Available Only Active</span>
+            {% else %}
+                <a href="?available_only=true" class="btn btn-sm btn-outline-success">
+                    <i class="fas fa-filter me-1"></i> Available Only
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- RANKED MATCHES LIST -->
+    {% if matches %}
+        <div class="row g-4">
+            {% for item in matches %}
+                <div class="col-lg-6">
+                    <div class="bc-card p-4 h-100 bg-white border-top border-3 {% if item.score >= 80 %}border-success{% elif item.score >= 50 %}border-primary{% else %}border-warning{% endif %}">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div class="d-flex align-items-center gap-3">
+                                <span class="badge-blood">{{ item.donor.blood_group }}</span>
+                                <div>
+                                    <h5 class="fw-bold mb-0 text-dark">{{ item.donor.full_name }}</h5>
+                                    <div class="text-secondary small">
+                                        <i class="fas fa-location-dot me-1 text-danger"></i> {{ item.donor.city }}, {{ item.donor.state }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-end">
+                                <div class="match-score-badge {% if item.score >= 80 %}match-score-high{% elif item.score >= 50 %}match-score-med{% else %}match-score-low{% endif %}">
+                                    {{ item.score }}% Match
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- AVAILABILITY & STATS -->
+                        <div class="d-flex gap-3 mb-3 small">
+                            <div>
+                                {% if item.donor.is_available %}
+                                    <span class="badge bg-success-subtle text-success"><i class="fas fa-circle-check me-1"></i> Available</span>
+                                {% else %}
+                                    <span class="badge bg-secondary-subtle text-secondary"><i class="fas fa-circle-minus me-1"></i> Unavailable</span>
+                                {% endif %}
+                            </div>
+                            <div class="text-muted">
+                                <i class="fas fa-heart text-danger me-1"></i> {{ item.donor.total_donations }} Past Donation(s)
+                            </div>
+                        </div>
+
+                        <!-- MATCHING EXPLANATION ACCORDION/LIST -->
+                        <div class="p-3 bg-light rounded border mb-3 small">
+                            <strong class="text-dark d-block mb-1"><i class="fas fa-calculator text-muted me-1"></i>Algorithm Score Breakdown:</strong>
+                            <ul class="list-unstyled mb-0 d-flex flex-column gap-1 text-secondary">
+                                {% for reason in item.reasons %}
+                                    <li><i class="fas fa-check text-success me-1"></i>{{ reason }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+
+                        <!-- ACTION BUTTON -->
+                        <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+                            <div>
+                                <small class="text-muted">Status: </small>
+                                <span class="badge badge-status-{{ item.match_record.status|lower }}">
+                                    {{ item.match_record.get_status_display }}
+                                </span>
+                            </div>
+
+                            <div>
+                                {% if item.match_record.status == 'SUGGESTED' %}
+                                    <form method="post" action="{% url 'contact_donor' item.match_record.id %}" class="d-inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-sm btn-primary-bc">
+                                            <i class="fas fa-paper-plane me-1"></i> Send Request
+                                        </button>
+                                    </form>
+                                {% elif item.match_record.status == 'CONTACTED' %}
+                                    <span class="badge bg-warning text-dark px-3 py-2">
+                                        <i class="fas fa-clock me-1"></i> Awaiting Donor
+                                    </span>
+                                {% elif item.match_record.status == 'ACCEPTED' %}
+                                    <a href="tel:{{ item.donor.phone }}" class="btn btn-sm btn-success fw-bold">
+                                        <i class="fas fa-phone me-1"></i> Call: {{ item.donor.phone }}
+                                    </a>
+                                {% elif item.match_record.status == 'DECLINED' %}
+                                    <span class="badge bg-secondary px-3 py-2">
+                                        <i class="fas fa-xmark me-1"></i> Declined
+                                    </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="bc-card p-5 text-center text-muted bg-white">
+            <i class="fas fa-users-slash fs-1 mb-3 text-secondary"></i>
+            <h5 class="fw-bold">No Compatible Donors Found</h5>
+            <p class="mb-0">There are currently no active registered donors matching the blood group compatibility for {{ blood_request.blood_group }}.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

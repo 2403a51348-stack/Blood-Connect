@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% block title %}Notifications | BloodConnect{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <div>
+            <h2 class="fw-bold mb-0">Notifications</h2>
+            <p class="text-muted small mb-0">Updates on blood requests, matches, and coordination responses</p>
+        </div>
+
+        {% if unread_count > 0 %}
+            <form method="post" action="{% url 'mark_all_notifications_read' %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-outline-secondary btn-sm">
+                    <i class="fas fa-check-double me-1"></i> Mark All as Read ({{ unread_count }})
+                </button>
+            </form>
+        {% endif %}
+    </div>
+
+    <div class="bc-card shadow-sm bg-white">
+        <div class="bc-card-body p-0">
+            {% if notifications %}
+                <div class="list-group list-group-flush">
+                    {% for n in notifications %}
+                        <div class="list-group-item p-3 {% if not n.is_read %}bg-light border-start border-4 border-danger{% endif %}">
+                            <div class="d-flex justify-content-between align-items-start mb-1">
+                                <div class="d-flex align-items-center gap-2">
+                                    {% if not n.is_read %}
+                                        <span class="badge bg-danger rounded-pill" style="font-size: 0.6rem;">NEW</span>
+                                    {% endif %}
+                                    <h6 class="fw-bold mb-0 {% if not n.is_read %}text-danger{% else %}text-dark{% endif %}">
+                                        {{ n.title }}
+                                    </h6>
+                                </div>
+                                <small class="text-muted">{{ n.created_at|date:"d M Y, H:i" }}</small>
+                            </div>
+
+                            <p class="text-secondary small mb-2">{{ n.message }}</p>
+
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="badge bg-secondary-subtle text-secondary small">{{ n.get_notification_type_display }}</span>
+
+                                <div class="d-flex gap-2">
+                                    {% if n.related_url %}
+                                        <a href="{% url 'mark_notification_read' n.id %}" class="btn btn-sm btn-outline-bc py-0 px-2" style="font-size: 0.8rem;">
+                                            View Details &raquo;
+                                        </a>
+                                    {% elif not n.is_read %}
+                                        <a href="{% url 'mark_notification_read' n.id %}" class="btn btn-sm btn-light py-0 px-2 text-muted" style="font-size: 0.8rem;">
+                                            Mark Read
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="p-5 text-center text-muted">
+                    <i class="fas fa-bell-slash fs-1 mb-3 text-secondary"></i>
+                    <h5 class="fw-bold">No Notifications Yet</h5>
+                    <p class="mb-0">You're all caught up! You'll receive real-time alerts when requests are created or updated.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

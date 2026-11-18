@@ -1,0 +1,274 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}BloodConnect | Emergency Blood Donor Matching & Coordination{% endblock %}</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <!-- Custom Healthcare Styling -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+    <!-- TOP EMERGENCY HELPLINE BANNER -->
+    <div class="emergency-top-bar text-center">
+        <div class="container d-flex justify-content-between align-items-center flex-wrap">
+            <div>
+                <i class="fas fa-truck-medical me-1"></i>
+                <strong>National Emergency Helpline:</strong> Call <strong>112 / 108</strong> for immediate ambulance services.
+            </div>
+            <div class="d-none d-md-block">
+                <i class="fas fa-clock me-1"></i> 24x7 Digital Blood Coordination Support
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN NAVBAR -->
+    <nav class="navbar navbar-expand-lg bc-navbar sticky-top">
+        <div class="container">
+            <a class="bc-brand" href="{% url 'home' %}">
+                <i class="fas fa-heart-pulse"></i>
+                <div>Blood<span>Connect</span></div>
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
+                    aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-3">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'home' %}"><i class="fas fa-house me-1"></i> Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'about' %}">About Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'how_it_works' %}">How It Works</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'contact' %}">Contact</a>
+                    </li>
+
+                    {% if user.is_authenticated %}
+                        {% if current_user_role == 'DONOR' or user.donor_profile %}
+                            <li class="nav-item">
+                                <a class="nav-link text-primary fw-semibold" href="{% url 'donor_dashboard' %}">
+                                    <i class="fas fa-hand-holding-heart me-1"></i> Donor Dashboard
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'donor_history' %}">Donation History</a>
+                            </li>
+                        {% elif current_user_role == 'REQUESTER' or user.requester_profile %}
+                            <li class="nav-item">
+                                <a class="nav-link text-danger fw-semibold" href="{% url 'requester_dashboard' %}">
+                                    <i class="fas fa-hospital-user me-1"></i> Requester Dashboard
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'requests_tracking' %}">My Requests</a>
+                            </li>
+                        {% endif %}
+
+                        {% if user.is_staff or user.is_superuser or current_user_role == 'ADMIN' %}
+                            <li class="nav-item">
+                                <a class="nav-link text-danger fw-bold" href="{% url 'admin_dashboard' %}">
+                                    <i class="fas fa-chart-line me-1"></i> Admin Portal
+                                </a>
+                            </li>
+                        {% endif %}
+                    {% endif %}
+                </ul>
+
+                <!-- RIGHT ACTION BUTTONS -->
+                <div class="d-flex align-items-center gap-2 flex-wrap">
+                    {% if user.is_authenticated %}
+                        <!-- NOTIFICATION ICON -->
+                        <a href="{% url 'notification_list' %}" class="btn btn-light position-relative rounded-circle p-2" title="Notifications">
+                            <i class="fas fa-bell text-secondary"></i>
+                            {% if unread_notifications_count > 0 %}
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                    {{ unread_notifications_count }}
+                                    <span class="visually-hidden">unread notifications</span>
+                                </span>
+                            {% endif %}
+                        </a>
+
+                        <!-- USER DROPDOWN -->
+                        <div class="dropdown">
+                            <button class="btn btn-outline-secondary dropdown-toggle d-flex align-items-center gap-2 py-1 px-3"
+                                    type="button" id="userMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-user-circle text-danger fs-5"></i>
+                                <span class="fw-semibold">{{ user.first_name|default:user.username }}</span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="userMenuButton">
+                                <li>
+                                    <h6 class="dropdown-header">Signed in as <strong>{{ user.username }}</strong></h6>
+                                </li>
+                                <li>
+                                    <span class="dropdown-item-text text-muted small">
+                                        Role: <span class="badge bg-danger">{{ current_user_role|default:"User" }}</span>
+                                    </span>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'profile' %}">
+                                        <i class="fas fa-id-card me-2 text-muted"></i> My Profile
+                                    </a>
+                                </li>
+                                {% if current_user_role == 'DONOR' or user.donor_profile %}
+                                    <li>
+                                        <a class="dropdown-item" href="{% url 'donor_dashboard' %}">
+                                            <i class="fas fa-gauge me-2 text-muted"></i> Donor Dashboard
+                                        </a>
+                                    </li>
+                                {% elif current_user_role == 'REQUESTER' or user.requester_profile %}
+                                    <li>
+                                        <a class="dropdown-item" href="{% url 'requester_dashboard' %}">
+                                            <i class="fas fa-gauge me-2 text-muted"></i> Requester Dashboard
+                                        </a>
+                                    </li>
+                                {% endif %}
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a class="dropdown-item text-danger" href="{% url 'logout' %}">
+                                        <i class="fas fa-right-from-bracket me-2"></i> Secure Logout
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- EMERGENCY CREATE REQUEST BUTTON -->
+                        <a href="{% url 'create_blood_request' %}" class="btn btn-primary-bc">
+                            <i class="fas fa-plus-circle me-1"></i> Request Blood
+                        </a>
+
+                    {% else %}
+                        <a href="{% url 'login' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-right-to-bracket me-1"></i> Log In
+                        </a>
+                        <a href="{% url 'register_donor' %}" class="btn btn-outline-bc">
+                            <i class="fas fa-hand-holding-medical me-1"></i> Become a Donor
+                        </a>
+                        <a href="{% url 'create_blood_request' %}" class="btn btn-primary-bc">
+                            <i class="fas fa-droplet me-1"></i> Emergency Request
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ALERT MESSAGES -->
+    <div class="container mt-3">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show shadow-sm" role="alert">
+                    {% if message.tags == 'success' %}
+                        <i class="fas fa-circle-check me-2 text-success"></i>
+                    {% elif message.tags == 'error' or message.tags == 'danger' %}
+                        <i class="fas fa-triangle-exclamation me-2 text-danger"></i>
+                    {% elif message.tags == 'warning' %}
+                        <i class="fas fa-circle-exclamation me-2 text-warning"></i>
+                    {% else %}
+                        <i class="fas fa-circle-info me-2 text-info"></i>
+                    {% endif %}
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <!-- MAIN BODY CONTENT -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bc-footer">
+        <div class="container">
+            <div class="row g-4">
+                <!-- Col 1: About & Mission -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <i class="fas fa-heart-pulse text-danger fs-3"></i>
+                        <span class="fs-4 fw-bold text-white">Blood<span class="text-danger">Connect</span></span>
+                    </div>
+                    <p class="text-secondary small leading-relaxed">
+                        BloodConnect is a web-based emergency blood donor matching and coordination platform.
+                        Our mission is to reduce critical response times by connecting voluntary donors directly with patients and hospitals in urgent need.
+                    </p>
+                    <div class="d-flex gap-3 text-secondary mt-3">
+                        <a href="#" class="fs-5" title="Twitter"><i class="fab fa-x-twitter"></i></a>
+                        <a href="#" class="fs-5" title="Facebook"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="fs-5" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" class="fs-5" title="Instagram"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+
+                <!-- Col 2: Navigation Links -->
+                <div class="col-lg-2 col-md-6">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled d-flex flex-column gap-2 small">
+                        <li><a href="{% url 'home' %}">Home</a></li>
+                        <li><a href="{% url 'about' %}">About Us</a></li>
+                        <li><a href="{% url 'how_it_works' %}">How It Works</a></li>
+                        <li><a href="{% url 'create_blood_request' %}">Request Blood</a></li>
+                        <li><a href="{% url 'register_donor' %}">Join as Donor</a></li>
+                        <li><a href="{% url 'contact' %}">Contact Support</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 3: Legal & Disclaimer -->
+                <div class="col-lg-3 col-md-6">
+                    <h5>Compliance & Policies</h5>
+                    <ul class="list-unstyled d-flex flex-column gap-2 small">
+                        <li><a href="{% url 'privacy' %}">Privacy Policy</a></li>
+                        <li><a href="{% url 'terms' %}">Terms and Conditions</a></li>
+                        <li><a href="{% url 'how_it_works' %}">Transfusion Screening Rules</a></li>
+                        <li><a href="{% url 'about' %}">Medical Professional Guidelines</a></li>
+                    </ul>
+                    <div class="mt-3 p-2 bg-dark rounded border border-secondary small text-secondary">
+                        <i class="fas fa-shield-halved text-warning me-1"></i>
+                        Preliminary discovery only. Actual transfusion compatibility must be verified by accredited clinical blood banks.
+                    </div>
+                </div>
+
+                <!-- Col 4: Emergency Contacts -->
+                <div class="col-lg-3 col-md-6">
+                    <h5>Emergency Helpline</h5>
+                    <ul class="list-unstyled small d-flex flex-column gap-2">
+                        <li><i class="fas fa-phone-volume text-danger me-2"></i> <strong>24/7 Helpline:</strong> +91 1800-BLOOD-HELP</li>
+                        <li><i class="fas fa-hospital text-danger me-2"></i> <strong>Emergency:</strong> 112 / 108</li>
+                        <li><i class="fas fa-envelope text-danger me-2"></i> <strong>Support:</strong> emergency@bloodconnect.org</li>
+                        <li><i class="fas fa-location-dot text-danger me-2"></i> Hitec City, Hyderabad, Telangana</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Bottom Copyright -->
+            <div class="bc-footer-bottom d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <div>
+                    &copy; 2026 <strong>BloodConnect</strong>. All rights reserved. Designed for emergency healthcare coordination.
+                </div>
+                <div>
+                    Built with Python, Django, MySQL & Bootstrap 5
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

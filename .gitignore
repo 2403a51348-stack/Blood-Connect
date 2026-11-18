@@ -1,0 +1,30 @@
+# Python
+*.py[cod]
+__pycache__/
+*.so
+.Python
+
+# Virtual Environment
+venv/
+env/
+ENV/
+
+# Database
+*.sqlite3
+db.sqlite3
+
+# Environment variables
+.env
+
+# Media & Static collection
+media/
+staticfiles/
+
+# IDE & Editor
+.vscode/
+.idea/
+*.swp
+
+# Archives
+*.zip
+

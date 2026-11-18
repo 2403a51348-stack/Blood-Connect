@@ -1,0 +1,447 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>BloodConnect | Donate Blood, Save Lives</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
+    <div class="container">
+
+        <a class="navbar-brand fw-bold" href="/">
+            <i class="fas fa-heart-pulse text-danger"></i>
+            Blood<span>Connect</span>
+        </a>
+
+        <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse" data-bs-target="#navbarMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarMenu">
+
+            <ul class="navbar-nav ms-auto align-items-lg-center">
+
+                <li class="nav-item">
+                    <a class="nav-link active" href="#home">Home</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#about">About</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#how-it-works">How It Works</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#why-us">Why BloodConnect</a>
+                </li>
+
+                <li class="nav-item ms-lg-3 mt-2 mt-lg-0">
+                    <a href="#request-blood" class="btn btn-danger">
+                        Request Blood
+                    </a>
+                </li>
+
+                <li class="nav-item ms-lg-2 mt-2 mt-lg-0">
+                    <a href="#become-donor" class="btn btn-outline-danger">
+                        Become a Donor
+                    </a>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+<!-- HERO SECTION -->
+<section class="hero-section" id="home">
+
+    <div class="container">
+        <div class="row align-items-center">
+
+            <div class="col-lg-7">
+
+                <span class="hero-label">
+                    <i class="fas fa-heart text-danger"></i>
+                    Every Drop Makes a Difference
+                </span>
+
+                <h1>
+                    Your Blood Can Be
+                    Someone's <span>Lifeline.</span>
+                </h1>
+
+                <p class="hero-description">
+                    BloodConnect brings blood donors and people in need
+                    together through a simple, reliable and accessible
+                    online platform.
+                </p>
+
+                <div class="hero-buttons">
+
+                    <a href="#request-blood" class="btn btn-danger btn-lg">
+                        <i class="fas fa-tint me-2"></i>
+                        Request Blood
+                    </a>
+
+                    <a href="#become-donor" class="btn btn-outline-danger btn-lg">
+                        <i class="fas fa-hand-holding-heart me-2"></i>
+                        Become a Donor
+                    </a>
+
+                </div>
+
+                <div class="hero-note">
+                    <i class="fas fa-shield-heart text-danger"></i>
+                    Connecting communities through voluntary blood donation.
+                </div>
+
+            </div>
+
+            <div class="col-lg-5 text-center mt-5 mt-lg-0">
+
+                <div class="hero-image-box">
+                    <div class="blood-icon">
+                        <i class="fas fa-droplet"></i>
+                    </div>
+
+                    <h3>Be Someone's Hero</h3>
+
+                    <p>
+                        A small act of kindness can make a life-changing
+                        difference.
+                    </p>
+
+                    <div class="hero-tag">
+                        <i class="fas fa-heart text-danger"></i>
+                        Donate Blood, Save Lives
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</section>
+
+
+<!-- ABOUT SECTION -->
+<section class="about-section section-padding" id="about">
+
+    <div class="container">
+
+        <div class="section-heading text-center">
+
+            <span>ABOUT BLOODCONNECT</span>
+
+            <h2>Connecting Donors With Those in Need</h2>
+
+            <p>
+                We aim to make finding potential blood donors easier
+                through a centralized digital platform.
+            </p>
+
+        </div>
+
+        <div class="row g-4 mt-4">
+
+            <div class="col-md-4">
+                <div class="feature-card">
+
+                    <div class="feature-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+
+                    <h4>Connect Donors</h4>
+
+                    <p>
+                        Help voluntary donors connect with people
+                        searching for blood.
+                    </p>
+
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="feature-card">
+
+                    <div class="feature-icon">
+                        <i class="fas fa-magnifying-glass"></i>
+                    </div>
+
+                    <h4>Find Potential Matches</h4>
+
+                    <p>
+                        Discover potential donors using configured
+                        blood-group criteria and location.
+                    </p>
+
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="feature-card">
+
+                    <div class="feature-icon">
+                        <i class="fas fa-bell"></i>
+                    </div>
+
+                    <h4>Stay Connected</h4>
+
+                    <p>
+                        Receive updates about requests and donor responses
+                        through website notifications.
+                    </p>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- HOW IT WORKS -->
+<section class="how-section section-padding" id="how-it-works">
+
+    <div class="container">
+
+        <div class="section-heading text-center">
+
+            <span>SIMPLE PROCESS</span>
+
+            <h2>How BloodConnect Works</h2>
+
+            <p>Three simple steps to connect people and potential donors.</p>
+
+        </div>
+
+        <div class="row g-4 mt-4">
+
+            <div class="col-md-4">
+                <div class="step-card">
+
+                    <div class="step-number">01</div>
+
+                    <i class="fas fa-user-plus"></i>
+
+                    <h4>Create an Account</h4>
+
+                    <p>
+                        Register as a blood donor or a person requesting blood.
+                    </p>
+
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="step-card">
+
+                    <div class="step-number">02</div>
+
+                    <i class="fas fa-search-location"></i>
+
+                    <h4>Find Potential Donors</h4>
+
+                    <p>
+                        Submit a request and discover potential donors
+                        based on configured matching criteria.
+                    </p>
+
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="step-card">
+
+                    <div class="step-number">03</div>
+
+                    <i class="fas fa-handshake"></i>
+
+                    <h4>Connect and Coordinate</h4>
+
+                    <p>
+                        Send requests, receive responses and coordinate
+                        with the appropriate blood bank or hospital.
+                    </p>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- CALL TO ACTION -->
+<section class="cta-section section-padding" id="why-us">
+
+    <div class="container text-center">
+
+        <i class="fas fa-heart-pulse cta-icon"></i>
+
+        <h2>Together, We Can Make a Difference</h2>
+
+        <p>
+            Join our community and help make potential blood donor
+            discovery easier.
+        </p>
+
+        <div class="mt-4">
+
+            <a href="#become-donor" class="btn btn-light btn-lg me-2">
+                Join as Donor
+            </a>
+
+            <a href="#request-blood" class="btn btn-outline-light btn-lg">
+                Request Blood
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- DONOR AND REQUESTER SECTION -->
+<section class="action-section section-padding">
+
+    <div class="container">
+
+        <div class="row g-4">
+
+            <div class="col-md-6" id="become-donor">
+
+                <div class="action-card donor-card">
+
+                    <i class="fas fa-hand-holding-droplet"></i>
+
+                    <h3>Become a Blood Donor</h3>
+
+                    <p>
+                        Register your donor profile and make yourself
+                        discoverable to authorized requesters.
+                    </p>
+
+                    <a href="/register/" class="btn btn-danger">
+                        Register as Donor
+                    </a>
+
+                </div>
+
+            </div>
+
+            <div class="col-md-6" id="request-blood">
+
+                <div class="action-card request-card">
+
+                    <i class="fas fa-hospital"></i>
+
+                    <h3>Need Blood?</h3>
+
+                    <p>
+                        Create a blood request and search for potential
+                        donors in your area.
+                    </p>
+
+                    <a href="/register/" class="btn btn-outline-danger">
+                        Create Blood Request
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- FOOTER -->
+<footer class="footer">
+
+    <div class="container">
+
+        <div class="row">
+
+            <div class="col-md-6">
+
+                <h3>
+                    <i class="fas fa-heart-pulse"></i>
+                    BloodConnect
+                </h3>
+
+                <p>
+                    Connecting people through voluntary blood donation.
+                    Every drop counts.
+                </p>
+
+            </div>
+
+            <div class="col-md-3">
+
+                <h5>Quick Links</h5>
+
+                <a href="#home">Home</a>
+                <a href="#about">About</a>
+                <a href="#how-it-works">How It Works</a>
+
+            </div>
+
+            <div class="col-md-3">
+
+                <h5>Contact</h5>
+
+                <p>BloodConnect Project</p>
+                <p>Support: Contact Admin</p>
+
+            </div>
+
+        </div>
+
+        <hr>
+
+        <div class="text-center copyright">
+
+            <p>
+                &copy; 2026 BloodConnect.
+                All Rights Reserved.
+            </p>
+
+        </div>
+
+    </div>
+
+</footer>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

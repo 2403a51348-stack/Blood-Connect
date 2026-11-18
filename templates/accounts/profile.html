@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% block title %}My Profile | BloodConnect{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="bc-card shadow-sm">
+                <div class="bc-card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="fas fa-id-card text-danger fs-4"></i>
+                        <h4 class="mb-0 fw-bold">Profile Management</h4>
+                    </div>
+                    <span class="badge bg-danger">{{ user_profile.get_role_display }}</span>
+                </div>
+
+                <div class="bc-card-body p-4 p-md-5">
+                    {% if donor_profile %}
+                        <div class="p-3 bg-light rounded border mb-4 d-flex align-items-center justify-content-between flex-wrap gap-3">
+                            <div class="d-flex align-items-center gap-3">
+                                <span class="badge-blood badge-blood-lg">{{ donor_profile.blood_group }}</span>
+                                <div>
+                                    <h5 class="fw-bold mb-0">{{ donor_profile.full_name }}</h5>
+                                    <div class="text-muted small">Registered Donor &bull; {{ donor_profile.city }}, {{ donor_profile.state }}</div>
+                                </div>
+                            </div>
+                            <div>
+                                {% if donor_profile.is_available %}
+                                    <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 rounded-pill fw-bold">
+                                        <i class="fas fa-circle-check me-1"></i> Available to Donate
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-secondary-subtle text-secondary border px-3 py-2 rounded-pill fw-bold">
+                                        <i class="fas fa-circle-minus me-1"></i> Currently Unavailable
+                                    </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <form method="post" action="{% url 'profile' %}">
+                        {% csrf_token %}
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">First Name</label>
+                                {{ form.first_name }}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Last Name</label>
+                                {{ form.last_name }}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Email Address</label>
+                                {{ form.email }}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Phone Number</label>
+                                {{ form.phone }}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">City</label>
+                                {{ form.city }}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">State</label>
+                                {{ form.state }}
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-semibold">Address</label>
+                                {{ form.address }}
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+                            <button type="submit" class="btn btn-primary-bc px-4">
+                                <i class="fas fa-floppy-disk me-1"></i> Save Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

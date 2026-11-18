@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}Terms and Conditions | BloodConnect{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="max-w-800 mx-auto bg-white p-4 p-md-5 rounded border shadow-sm">
+        <span class="badge bg-danger-subtle text-danger mb-2">Terms of Service</span>
+        <h1 class="fw-bold mb-4">Terms and Conditions of Use</h1>
+        <p class="text-muted small">Effective Date: November 13, 2026</p>
+
+        <hr class="my-4">
+
+        <div class="alert alert-warning border-warning">
+            <h5 class="fw-bold text-dark mb-1"><i class="fas fa-triangle-exclamation text-warning me-2"></i>Critical Medical & Non-Emergency Notice</h5>
+            <p class="mb-0 small">
+                BloodConnect is a web coordination system and NOT an emergency ambulance dispatch or licensed medical facility. If you are experiencing an acute, life-threatening trauma or medical emergency, immediately dial <strong>112</strong> or <strong>108</strong>, or proceed directly to the nearest hospital trauma center.
+            </p>
+        </div>
+
+        <h4 class="fw-bold text-dark mt-4">1. Scope of the Platform</h4>
+        <p class="text-secondary leading-relaxed">
+            BloodConnect provides preliminary, software-based discovery to facilitate direct communication between voluntary donors and individuals requiring blood. We do not manufacture, store, test, sell, or transport blood components.
+        </p>
+
+        <h4 class="fw-bold text-dark mt-4">2. Medical Verification Requirement</h4>
+        <p class="text-secondary leading-relaxed">
+            The compatibility matching algorithm operates as an initial discovery filter based on standard red-cell ABO/Rh rules. Software matching does NOT substitute for mandatory laboratory cross-matching, antibody screening, disease testing, or pre-donation physical exams conducted by accredited blood bank personnel.
+        </p>
+
+        <h4 class="fw-bold text-dark mt-4">3. Prohibited Conduct & Commercial Prohibition</h4>
+        <p class="text-secondary leading-relaxed">
+            Blood donation through BloodConnect is strictly <strong>voluntary and non-remunerated</strong>. Offering or demanding financial payment, remuneration, or commercial compensation for blood donation is strictly illegal under the National Blood Policy and will result in immediate account termination and legal reporting.
+        </p>
+
+        <h4 class="fw-bold text-dark mt-4">4. Limitation of Liability</h4>
+        <p class="text-secondary leading-relaxed">
+            BloodConnect, its developers, and contributors shall not be held liable for any delays in donor arrival, clinical complications during or following transfusion, or donor cancellation.
+        </p>
+    </div>
+</div>
+{% endblock %}

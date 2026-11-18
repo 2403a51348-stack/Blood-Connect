@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% block title %}Manage Donors | BloodConnect Admin{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <div>
+            <h2 class="fw-bold mb-0">Donor Directory Management</h2>
+            <p class="text-muted small mb-0">Review registered blood donors, availability statuses, and account controls</p>
+        </div>
+        <a href="{% url 'admin_dashboard' %}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-1"></i> Control Center
+        </a>
+    </div>
+
+    <!-- FILTER BAR -->
+    <div class="bc-card p-3 mb-4 bg-white">
+        <form method="get" class="row g-2 align-items-center">
+            <div class="col-md-3">
+                <select name="blood_group" class="form-select form-select-sm">
+                    <option value="">All Blood Groups</option>
+                    {% for bg in blood_groups %}
+                        <option value="{{ bg }}" {% if selected_bg == bg %}selected{% endif %}>{{ bg }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <input type="text" name="city" class="form-control form-select-sm" placeholder="Search by City" value="{{ selected_city|default:'' }}">
+            </div>
+            <div class="col-md-3">
+                <select name="availability" class="form-select form-select-sm">
+                    <option value="">All Availabilities</option>
+                    <option value="true" {% if selected_availability == 'true' %}selected{% endif %}>Available Only</option>
+                    <option value="false" {% if selected_availability == 'false' %}selected{% endif %}>Unavailable Only</option>
+                </select>
+            </div>
+            <div class="col-md-3 d-flex gap-2">
+                <button type="submit" class="btn btn-sm btn-primary-bc flex-grow-1">Filter</button>
+                <a href="{% url 'manage_donors' %}" class="btn btn-sm btn-light border">Reset</a>
+            </div>
+        </form>
+    </div>
+
+    <!-- DONORS TABLE -->
+    <div class="bc-card bg-white shadow-sm">
+        <div class="bc-card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light small text-uppercase">
+                        <tr>
+                            <th>Donor Name</th>
+                            <th>Blood Group</th>
+                            <th>Contact Phone</th>
+                            <th>City & State</th>
+                            <th>Donations</th>
+                            <th>Availability</th>
+                            <th>Account Status</th>
+                            <th class="text-end">Administrative Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for d in donors %}
+                            <tr>
+                                <td>
+                                    <strong class="text-dark">{{ d.full_name }}</strong>
+                                    <div class="small text-muted">{{ d.user.username }} &bull; {{ d.user.email }}</div>
+                                </td>
+                                <td><span class="badge bg-danger">{{ d.blood_group }}</span></td>
+                                <td>{{ d.phone }}</td>
+                                <td>{{ d.city }}, {{ d.state }}</td>
+                                <td><span class="badge bg-light text-dark border">{{ d.total_donations }} Unit(s)</span></td>
+                                <td>
+                                    {% if d.is_available %}
+                                        <span class="badge bg-success-subtle text-success">Available</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary-subtle text-secondary">Unavailable</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if d.user.is_active %}
+                                        <span class="badge bg-success">Active</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">Deactivated</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-end">
+                                    <form method="post" action="{% url 'toggle_user_active' d.user.id %}" class="d-inline">
+                                        {% csrf_token %}
+                                        {% if d.user.is_active %}
+                                            <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Deactivate/block this user account?');">
+                                                <i class="fas fa-user-slash me-1"></i> Deactivate
+                                            </button>
+                                        {% else %}
+                                            <button type="submit" class="btn btn-sm btn-outline-success" onclick="return confirm('Reactivate this user account?');">
+                                                <i class="fas fa-user-check me-1"></i> Activate
+                                            </button>
+                                        {% endif %}
+                                    </form>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr><td colspan="8" class="text-center text-muted py-4">No donors found matching criteria.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

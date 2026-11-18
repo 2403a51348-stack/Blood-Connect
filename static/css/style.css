@@ -1,0 +1,386 @@
+/* ==========================================================================
+   BloodConnect - Web-Based Emergency Blood Donor Matching & Coordination System
+   Modern Professional Healthcare Stylesheet
+   ========================================================================== */
+
+:root {
+    --bc-primary: #b30000;
+    --bc-primary-dark: #800000;
+    --bc-primary-light: #ff4d4d;
+    --bc-secondary: #ffffff;
+    --bc-dark: #1e293b;
+    --bc-body-bg: #f8fafc;
+    --bc-card-bg: #ffffff;
+    --bc-border-color: #e2e8f0;
+    --bc-text-muted: #64748b;
+    --bc-success: #10b981;
+    --bc-warning: #f59e0b;
+    --bc-info: #0284c7;
+    --bc-font: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --bc-radius: 12px;
+    --bc-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.06);
+    --bc-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -1px rgba(0, 0, 0, 0.05);
+    --bc-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+}
+
+body {
+    font-family: var(--bc-font);
+    background-color: var(--bc-body-bg);
+    color: var(--bc-dark);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1 0 auto;
+}
+
+/* ==========================================================================
+   Top Emergency Alert Bar
+   ========================================================================== */
+.emergency-top-bar {
+    background: linear-gradient(90deg, #990000, #b30000);
+    color: #ffffff;
+    font-size: 0.85rem;
+    padding: 6px 0;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+}
+.emergency-top-bar a {
+    color: #fef08a;
+    text-decoration: underline;
+    font-weight: 600;
+}
+
+/* ==========================================================================
+   Navbar
+   ========================================================================== */
+.bc-navbar {
+    background: #ffffff;
+    border-bottom: 1px solid var(--bc-border-color);
+    box-shadow: var(--bc-shadow-sm);
+    padding: 0.8rem 0;
+}
+
+.bc-brand {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--bc-dark);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.bc-brand span {
+    color: var(--bc-primary);
+}
+
+.bc-brand i {
+    color: var(--bc-primary);
+    animation: heartBeat 2s infinite ease-in-out;
+}
+
+@keyframes heartBeat {
+    0%, 100% { transform: scale(1); }
+    15% { transform: scale(1.18); }
+    30% { transform: scale(1); }
+    45% { transform: scale(1.12); }
+}
+
+.nav-link {
+    font-weight: 500;
+    color: #475569 !important;
+    padding: 0.5rem 0.9rem !important;
+    transition: all 0.2s ease-in-out;
+    border-radius: 6px;
+}
+
+.nav-link:hover, .nav-link.active {
+    color: var(--bc-primary) !important;
+    background-color: #fff1f2;
+}
+
+.btn-primary-bc {
+    background-color: var(--bc-primary);
+    border-color: var(--bc-primary);
+    color: #ffffff;
+    font-weight: 600;
+    border-radius: 8px;
+    padding: 0.5rem 1.25rem;
+    transition: all 0.2s ease;
+}
+
+.btn-primary-bc:hover {
+    background-color: var(--bc-primary-dark);
+    border-color: var(--bc-primary-dark);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(179, 0, 0, 0.25);
+}
+
+.btn-outline-bc {
+    background-color: transparent;
+    border: 2px solid var(--bc-primary);
+    color: var(--bc-primary);
+    font-weight: 600;
+    border-radius: 8px;
+    padding: 0.45rem 1.2rem;
+    transition: all 0.2s ease;
+}
+
+.btn-outline-bc:hover {
+    background-color: var(--bc-primary);
+    color: #ffffff;
+}
+
+/* ==========================================================================
+   Hero Section
+   ========================================================================== */
+.hero-section {
+    background: linear-gradient(135deg, #fff5f5 0%, #ffffff 50%, #fef2f2 100%);
+    padding: 5rem 0 4rem;
+    position: relative;
+    border-bottom: 1px solid #fee2e2;
+}
+
+.hero-title {
+    font-size: 3rem;
+    font-weight: 800;
+    line-height: 1.15;
+    color: #0f172a;
+}
+
+.hero-title span {
+    color: var(--bc-primary);
+}
+
+.hero-subtitle {
+    font-size: 1.2rem;
+    color: #475569;
+    line-height: 1.6;
+    margin: 1.5rem 0 2rem;
+}
+
+.hero-stats-box {
+    background: #ffffff;
+    border: 1px solid var(--bc-border-color);
+    border-radius: var(--bc-radius);
+    padding: 1.5rem;
+    box-shadow: var(--bc-shadow);
+    text-align: center;
+}
+
+.hero-stats-number {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: var(--bc-primary);
+}
+
+.hero-stats-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--bc-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* ==========================================================================
+   Cards & Layout Components
+   ========================================================================== */
+.bc-card {
+    background: var(--bc-card-bg);
+    border: 1px solid var(--bc-border-color);
+    border-radius: var(--bc-radius);
+    box-shadow: var(--bc-shadow-sm);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    overflow: hidden;
+}
+
+.bc-card:hover {
+    box-shadow: var(--bc-shadow);
+}
+
+.bc-card-header {
+    background-color: #ffffff;
+    border-bottom: 1px solid var(--bc-border-color);
+    padding: 1.2rem 1.5rem;
+    font-weight: 700;
+}
+
+.bc-card-body {
+    padding: 1.5rem;
+}
+
+/* Blood Group Badges */
+.badge-blood {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fee2e2;
+    color: var(--bc-primary);
+    font-weight: 800;
+    font-size: 1.1rem;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 2px solid var(--bc-primary-light);
+}
+
+.badge-blood-lg {
+    width: 64px;
+    height: 64px;
+    font-size: 1.4rem;
+}
+
+.badge-blood-sm {
+    width: 32px;
+    height: 32px;
+    font-size: 0.85rem;
+}
+
+/* Status Badges */
+.badge-status {
+    padding: 0.35rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.badge-status-pending { background-color: #fef3c7; color: #b45309; }
+.badge-status-contacted { background-color: #e0f2fe; color: #0369a1; }
+.badge-status-accepted { background-color: #d1fae5; color: #047857; }
+.badge-status-rejected { background-color: #fee2e2; color: #b91c1c; }
+.badge-status-completed { background-color: #dcfce7; color: #15803d; }
+.badge-status-cancelled { background-color: #f1f5f9; color: #475569; }
+
+/* Urgency Badges */
+.badge-urgency-critical { background-color: #b91c1c; color: #ffffff; }
+.badge-urgency-high { background-color: #ea580c; color: #ffffff; }
+.badge-urgency-medium { background-color: #d97706; color: #ffffff; }
+.badge-urgency-low { background-color: #2563eb; color: #ffffff; }
+
+/* Medical Disclaimer Banner */
+.medical-disclaimer-box {
+    background-color: #fffbeb;
+    border-left: 5px solid #d97706;
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    font-size: 0.9rem;
+    color: #92400e;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.medical-disclaimer-box i {
+    font-size: 1.3rem;
+    color: #d97706;
+    margin-top: 2px;
+}
+
+/* ==========================================================================
+   Match Score Meter & Progress
+   ========================================================================== */
+.match-score-badge {
+    font-size: 1.1rem;
+    font-weight: 800;
+    padding: 0.4rem 0.8rem;
+    border-radius: 8px;
+}
+.match-score-high { background-color: #dcfce7; color: #166534; border: 1px solid #86efac; }
+.match-score-med { background-color: #e0f2fe; color: #075985; border: 1px solid #7dd3fc; }
+.match-score-low { background-color: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+
+/* Timeline Stepper for Request Tracking */
+.tracking-stepper {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    margin: 2rem 0;
+}
+.tracking-stepper::before {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 40px;
+    right: 40px;
+    height: 4px;
+    background: #e2e8f0;
+    z-index: 1;
+}
+.tracking-step {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    flex: 1;
+}
+.tracking-step-circle {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background-color: #ffffff;
+    border: 3px solid #cbd5e1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 8px;
+    font-weight: 700;
+    color: #64748b;
+    transition: all 0.3s ease;
+}
+.tracking-step.completed .tracking-step-circle {
+    background-color: var(--bc-success);
+    border-color: var(--bc-success);
+    color: #ffffff;
+}
+.tracking-step.active .tracking-step-circle {
+    background-color: var(--bc-primary);
+    border-color: var(--bc-primary);
+    color: #ffffff;
+    box-shadow: 0 0 0 4px #fee2e2;
+}
+.tracking-step-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #475569;
+}
+
+/* ==========================================================================
+   Footer
+   ========================================================================== */
+.bc-footer {
+    background-color: #0f172a;
+    color: #94a3b8;
+    padding: 3.5rem 0 1.5rem;
+    margin-top: auto;
+    font-size: 0.925rem;
+}
+
+.bc-footer h5 {
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 1.25rem;
+}
+
+.bc-footer a {
+    color: #cbd5e1;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.bc-footer a:hover {
+    color: var(--bc-primary-light);
+}
+
+.bc-footer-bottom {
+    border-top: 1px solid #1e293b;
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    font-size: 0.85rem;
+}

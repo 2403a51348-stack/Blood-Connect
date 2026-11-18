@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}Privacy Policy | BloodConnect{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="max-w-800 mx-auto bg-white p-4 p-md-5 rounded border shadow-sm">
+        <span class="badge bg-danger-subtle text-danger mb-2">Privacy & Confidentiality</span>
+        <h1 class="fw-bold mb-4">BloodConnect Privacy Policy</h1>
+        <p class="text-muted small">Effective Date: November 13, 2026 | Last Updated: 2026</p>
+
+        <hr class="my-4">
+
+        <h4 class="fw-bold text-dark mt-4">1. Commitment to Personal Data Protection</h4>
+        <p class="text-secondary leading-relaxed">
+            BloodConnect respects the sensitive nature of health and contact data. This policy outlines how we collect, store, and restrict access to donor and requester personal information.
+        </p>
+
+        <h4 class="fw-bold text-dark mt-4">2. Information We Collect</h4>
+        <ul class="text-secondary leading-relaxed">
+            <li><strong>Donor Information:</strong> Full name, verified blood group, contact telephone number, residential area/city, availability state, and optional past donation records.</li>
+            <li><strong>Requester Information:</strong> Contact person, telephone number, patient reference name, hospital facility, units required, and clinical urgency level.</li>
+            <li><strong>System Telemetry:</strong> Log timestamps, notification delivery statuses, and session identifiers for security auditing.</li>
+        </ul>
+
+        <h4 class="fw-bold text-dark mt-4">3. Strict Disclosure Safeguards (Donor Privacy)</h4>
+        <p class="text-secondary leading-relaxed">
+            To prevent spam and protect donors, a donor's personal telephone number and full residential address are <strong>NEVER publicly searchable</strong> on open web search pages. Contact details are only revealed to a requester when a donor explicitly reviews and <strong>Accepts</strong> a specific blood donation request.
+        </p>
+
+        <h4 class="fw-bold text-dark mt-4">4. Password and Credential Security</h4>
+        <p class="text-secondary leading-relaxed">
+            All user passwords are encrypted using industry-standard salted PBKDF2 with SHA-256 password hashing. Passwords are never stored in plain text.
+        </p>
+
+        <h4 class="fw-bold text-dark mt-4">5. Account Deactivation & Data Deletion</h4>
+        <p class="text-secondary leading-relaxed">
+            Users retain the right to mark their profile as <em>Unavailable</em> or request total account removal at any time by contacting privacy@bloodconnect.org.
+        </p>
+    </div>
+</div>
+{% endblock %}

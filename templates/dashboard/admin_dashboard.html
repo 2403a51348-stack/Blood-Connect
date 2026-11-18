@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+{% block title %}Admin Dashboard | BloodConnect Control Center{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- ADMIN HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <div>
+            <span class="badge bg-danger mb-1">Administrator Portal</span>
+            <h2 class="fw-bold mb-0">System Control Center</h2>
+            <p class="text-muted small mb-0">Overview of operational metrics, blood inventory matching, and security</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="{% url 'manage_donors' %}" class="btn btn-outline-danger">
+                <i class="fas fa-users me-1"></i> Manage Donors
+            </a>
+            <a href="{% url 'manage_requests' %}" class="btn btn-outline-secondary">
+                <i class="fas fa-file-medical me-1"></i> Manage Requests
+            </a>
+            <a href="{% url 'admin:index' %}" class="btn btn-dark" target="_blank">
+                <i class="fas fa-lock me-1"></i> Django Admin &raquo;
+            </a>
+        </div>
+    </div>
+
+    <!-- PRIMARY METRICS CARDS -->
+    <div class="row g-3 mb-4">
+        <div class="col-sm-6 col-lg-3">
+            <div class="bc-card p-3 bg-white text-center">
+                <div class="text-muted small">Total Registered Users</div>
+                <h3 class="fw-bold text-dark mb-0">{{ total_users }}</h3>
+                <small class="text-muted">{{ total_requesters }} Requesters</small>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <div class="bc-card p-3 bg-white text-center border-start border-4 border-danger">
+                <div class="text-muted small">Total Registered Donors</div>
+                <h3 class="fw-bold text-danger mb-0">{{ total_donors }}</h3>
+                <small class="text-success fw-bold">{{ available_donors }} Available Now</small>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <div class="bc-card p-3 bg-white text-center border-start border-4 border-warning">
+                <div class="text-muted small">Emergency Requests</div>
+                <h3 class="fw-bold text-warning mb-0">{{ total_requests }}</h3>
+                <small class="text-danger fw-bold">{{ pending_requests }} Pending Action</small>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <div class="bc-card p-3 bg-white text-center border-start border-4 border-success">
+                <div class="text-muted small">Fulfilled Transfusions</div>
+                <h3 class="fw-bold text-success mb-0">{{ completed_requests }}</h3>
+                <small class="text-muted">{{ accepted_requests }} In Progress</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- BLOOD GROUP DISTRIBUTION & RECENT REQUESTS -->
+    <div class="row g-4 mb-4">
+        <!-- Blood Group Breakdown -->
+        <div class="col-lg-5">
+            <div class="bc-card p-4 h-100 bg-white">
+                <h5 class="fw-bold mb-3 border-bottom pb-2 text-dark">
+                    <i class="fas fa-droplet text-danger me-2"></i>Donor Pool by Blood Group
+                </h5>
+                <div class="row g-2">
+                    {% for bg in blood_group_counts %}
+                        <div class="col-6">
+                            <div class="p-2 bg-light rounded d-flex justify-content-between align-items-center">
+                                <span class="badge-blood-sm bg-danger text-white rounded-circle d-flex align-items-center justify-content-center">
+                                    {{ bg.blood_group }}
+                                </span>
+                                <span class="fw-bold text-dark fs-6">{{ bg.count }} Donor(s)</span>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <div class="col-12 text-muted small">No donors registered yet.</div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Blood Requests -->
+        <div class="col-lg-7">
+            <div class="bc-card p-4 h-100 bg-white">
+                <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-2">
+                    <h5 class="fw-bold mb-0 text-dark">
+                        <i class="fas fa-clock-rotate-left text-danger me-2"></i>Recent Blood Requests
+                    </h5>
+                    <a href="{% url 'manage_requests' %}" class="small text-danger fw-bold">View All</a>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover align-middle mb-0">
+                        <thead class="table-light small">
+                            <tr>
+                                <th>Request ID</th>
+                                <th>Blood</th>
+                                <th>Hospital</th>
+                                <th>Status</th>
+                                <th class="text-end">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for req in recent_requests %}
+                                <tr>
+                                    <td><span class="fw-bold">{{ req.request_id }}</span></td>
+                                    <td><span class="badge bg-danger">{{ req.blood_group }}</span></td>
+                                    <td><small>{{ req.hospital_name }}</small></td>
+                                    <td><span class="badge badge-status-{{ req.status|lower }}">{{ req.get_status_display }}</span></td>
+                                    <td class="text-end">
+                                        <a href="{% url 'track_request' req.id %}" class="btn btn-sm btn-outline-secondary py-0">Track</a>
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr><td colspan="5" class="text-center text-muted small py-3">No recent requests.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AUDIT ACTIVITY LOGS -->
+    <div class="bc-card bg-white shadow-sm">
+        <div class="bc-card-header bg-white d-flex justify-content-between align-items-center">
+            <h5 class="fw-bold mb-0 text-dark">
+                <i class="fas fa-shield-halved text-danger me-2"></i>Security & Administration Audit Trail
+            </h5>
+            <a href="{% url 'activity_logs' %}" class="small text-muted">Full Audit Log &raquo;</a>
+        </div>
+        <div class="bc-card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0 small">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>Administrator</th>
+                            <th>Action Type</th>
+                            <th>Details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for log in recent_logs %}
+                            <tr>
+                                <td class="text-muted">{{ log.timestamp|date:"d M Y, H:i" }}</td>
+                                <td><strong>{{ log.admin_user.username|default:"System" }}</strong></td>
+                                <td><span class="badge bg-dark">{{ log.action_type }}</span></td>
+                                <td>{{ log.description }}</td>
+                            </tr>
+                        {% empty %}
+                            <tr><td colspan="4" class="text-center text-muted py-3">No activity logs recorded.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

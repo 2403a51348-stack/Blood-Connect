@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block title %}Emergency Blood Requests Tracking | BloodConnect{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <div>
+            <h2 class="fw-bold mb-0">Blood Requests Directory</h2>
+            <p class="text-muted small mb-0">Live status and real-time coordination updates</p>
+        </div>
+        <a href="{% url 'create_blood_request' %}" class="btn btn-primary-bc">
+            <i class="fas fa-plus me-1"></i> Post New Blood Request
+        </a>
+    </div>
+
+    <div class="bc-card shadow-sm">
+        <div class="bc-card-body p-0">
+            {% if requests %}
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light small text-uppercase">
+                            <tr>
+                                <th>Request ID</th>
+                                <th>Patient Name</th>
+                                <th>Blood Needed</th>
+                                <th>Hospital</th>
+                                <th>City</th>
+                                <th>Urgency</th>
+                                <th>Status</th>
+                                <th class="text-end">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for req in requests %}
+                                <tr>
+                                    <td>
+                                        <a href="{% url 'track_request' req.id %}" class="fw-bold text-dark">
+                                            {{ req.request_id }}
+                                        </a>
+                                    </td>
+                                    <td><strong>{{ req.patient_name }}</strong></td>
+                                    <td>
+                                        <span class="badge-blood-sm bg-danger text-white rounded-circle d-inline-flex align-items-center justify-content-center">
+                                            {{ req.blood_group }}
+                                        </span>
+                                        <span class="ms-1 fw-bold">{{ req.units_required }} Unit(s)</span>
+                                    </td>
+                                    <td>{{ req.hospital_name }}</td>
+                                    <td>{{ req.city }}</td>
+                                    <td>
+                                        <span class="badge badge-urgency-{{ req.urgency|lower }}">
+                                            {{ req.get_urgency_display }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge badge-status-{{ req.status|lower }}">{{ req.get_status_display }}</span>
+                                    </td>
+                                    <td class="text-end">
+                                        <a href="{% url 'track_request' req.id %}" class="btn btn-sm btn-outline-bc">
+                                            <i class="fas fa-eye me-1"></i> Track Request
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="p-5 text-center text-muted">
+                    <p class="mb-0">No blood requests found.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

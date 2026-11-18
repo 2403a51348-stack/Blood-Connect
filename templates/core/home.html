@@ -1,0 +1,243 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}BloodConnect | Emergency Blood Donor Matching & Coordination System{% endblock %}
+
+{% block content %}
+<!-- HERO SECTION -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-7">
+                <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-2 rounded-pill fw-bold mb-3">
+                    <i class="fas fa-bolt-lightning me-1"></i> Rapid Emergency Donor Discovery
+                </span>
+                <h1 class="hero-title">
+                    Every Drop Counts. <span>Connect Directly</span> with Emergency Blood Donors.
+                </h1>
+                <p class="hero-subtitle">
+                    BloodConnect bridges the critical time gap between hospital blood bank shortages and willing voluntary donors through intelligent, compatibility-aware matching algorithms.
+                </p>
+
+                <div class="d-flex flex-wrap gap-3">
+                    <a href="{% url 'create_blood_request' %}" class="btn btn-primary-bc btn-lg px-4">
+                        <i class="fas fa-droplet me-2"></i> Request Blood Now
+                    </a>
+                    <a href="{% url 'register_donor' %}" class="btn btn-outline-bc btn-lg px-4">
+                        <i class="fas fa-hand-holding-heart me-2"></i> Register as Donor
+                    </a>
+                </div>
+
+                <!-- Emergency Disclaimer Note -->
+                <div class="mt-4 p-3 bg-white rounded border border-danger-subtle shadow-sm d-flex align-items-center gap-3">
+                    <div class="badge-blood-sm bg-danger text-white rounded-circle d-flex align-items-center justify-content-center">
+                        <i class="fas fa-shield-heart"></i>
+                    </div>
+                    <div class="small text-muted">
+                        <strong>Preliminary Matching Notice:</strong> Our software matches potential donors by blood group compatibility and location. Final cross-matching & screening must be verified by certified medical personnel.
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <!-- STATS GRID -->
+                <div class="row g-3">
+                    <div class="col-6">
+                        <div class="hero-stats-box">
+                            <i class="fas fa-users text-danger fs-2 mb-2"></i>
+                            <div class="hero-stats-number">{{ total_donors }}</div>
+                            <div class="hero-stats-label">Registered Donors</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="hero-stats-box">
+                            <i class="fas fa-circle-check text-success fs-2 mb-2"></i>
+                            <div class="hero-stats-number text-success">{{ available_donors }}</div>
+                            <div class="hero-stats-label">Available Now</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="hero-stats-box">
+                            <i class="fas fa-truck-fast text-warning fs-2 mb-2"></i>
+                            <div class="hero-stats-number text-warning">{{ active_requests }}</div>
+                            <div class="hero-stats-label">Active Requests</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="hero-stats-box">
+                            <i class="fas fa-heart text-danger fs-2 mb-2"></i>
+                            <div class="hero-stats-number">{{ total_donations }}</div>
+                            <div class="hero-stats-label">Lives Impacted</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- LIVE URGENT REQUESTS SECTION -->
+{% if recent_urgent_requests %}
+<section class="py-5 bg-white border-bottom">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+            <div>
+                <span class="text-danger fw-bold text-uppercase small letter-spacing-1">Urgent Coordination</span>
+                <h2 class="fw-bold mb-0">Active Blood Requests</h2>
+            </div>
+            <a href="{% url 'requests_tracking' %}" class="btn btn-outline-secondary btn-sm">
+                View All Requests <i class="fas fa-arrow-right ms-1"></i>
+            </a>
+        </div>
+
+        <div class="row g-4">
+            {% for req in recent_urgent_requests %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="bc-card h-100 p-3 border-start border-4 border-danger">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="badge-blood">{{ req.blood_group }}</span>
+                                <div>
+                                    <h6 class="fw-bold mb-0 text-dark">{{ req.patient_name }}</h6>
+                                    <span class="text-muted small"><i class="fas fa-hashtag me-1"></i>{{ req.request_id }}</span>
+                                </div>
+                            </div>
+                            <span class="badge badge-urgency-{{ req.urgency|lower }} px-2 py-1 rounded small">
+                                {{ req.get_urgency_display }}
+                            </span>
+                        </div>
+                        <div class="mt-2 text-secondary small">
+                            <p class="mb-1"><i class="fas fa-hospital me-2 text-danger"></i><strong>{{ req.hospital_name }}</strong></p>
+                            <p class="mb-1"><i class="fas fa-location-dot me-2 text-muted"></i>{{ req.city }}, {{ req.state }}</p>
+                            <p class="mb-2"><i class="fas fa-cubes me-2 text-muted"></i>Units Required: <strong>{{ req.units_required }}</strong></p>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+                            <span class="badge badge-status-{{ req.status|lower }}">{{ req.get_status_display }}</span>
+                            <a href="{% url 'track_request' req.id %}" class="btn btn-sm btn-outline-bc">
+                                View Details & Track
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- HOW IT WORKS SECTION -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center max-w-700 mx-auto mb-5">
+            <span class="text-danger fw-bold text-uppercase small">Simple, Transparent Process</span>
+            <h2 class="fw-bold">How BloodConnect Works</h2>
+            <p class="text-muted">A structured three-step coordination workflow designed for speed and accountability.</p>
+        </div>
+
+        <div class="row g-4 text-center">
+            <div class="col-md-4">
+                <div class="bc-card p-4 h-100">
+                    <div class="badge-blood-lg bg-danger-subtle text-danger mx-auto mb-3">
+                        <i class="fas fa-file-waveform fs-3"></i>
+                    </div>
+                    <h5 class="fw-bold">1. Post Emergency Need</h5>
+                    <p class="text-muted small">
+                        Requesters or hospitals submit patient details, required units, blood group, hospital location, and urgency status.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="bc-card p-4 h-100">
+                    <div class="badge-blood-lg bg-danger-subtle text-danger mx-auto mb-3">
+                        <i class="fas fa-microchip fs-3"></i>
+                    </div>
+                    <h5 class="fw-bold">2. Intelligent Matching</h5>
+                    <p class="text-muted small">
+                        Our algorithm evaluates red-cell compatibility, donor availability, distance, and activity score to rank eligible donors.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="bc-card p-4 h-100">
+                    <div class="badge-blood-lg bg-danger-subtle text-danger mx-auto mb-3">
+                        <i class="fas fa-bell fs-3"></i>
+                    </div>
+                    <h5 class="fw-bold">3. Rapid Coordination</h5>
+                    <p class="text-muted small">
+                        Donors receive instant in-app alerts, accept requests, and coordinate with the hospital for medical cross-matching.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- COMPATIBILITY MATRIX PREVIEW -->
+<section class="py-5 bg-white border-top">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6">
+                <span class="text-danger fw-bold text-uppercase small">Clinical Foundations</span>
+                <h2 class="fw-bold">Red Blood Cell Transfusion Compatibility</h2>
+                <p class="text-muted">
+                    BloodConnect integrates standard transfusion compatibility rules into its preliminary algorithm:
+                </p>
+                <ul class="list-unstyled d-flex flex-column gap-2 text-secondary">
+                    <li><i class="fas fa-check-circle text-success me-2"></i><strong>O Negative (O-):</strong> Universal red cell donor. Can donate to all ABO/Rh blood groups.</li>
+                    <li><i class="fas fa-check-circle text-success me-2"></i><strong>AB Positive (AB+):</strong> Universal red cell recipient. Can receive red blood cells from all groups.</li>
+                    <li><i class="fas fa-check-circle text-success me-2"></i><strong>Rh Factor Rules:</strong> Rh-positive individuals can receive Rh-positive or Rh-negative blood, while Rh-negative individuals can generally only receive Rh-negative blood.</li>
+                </ul>
+                <a href="{% url 'how_it_works' %}" class="btn btn-outline-bc mt-2">
+                    Learn More About Matching Rules <i class="fas fa-arrow-right ms-1"></i>
+                </a>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="bc-card p-4 shadow-sm">
+                    <h5 class="fw-bold mb-3 text-dark"><i class="fas fa-table-cells text-danger me-2"></i>Compatibility Quick Reference</h5>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-sm text-center mb-0 align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Recipient Group</th>
+                                    <th>Can Receive Red Cells From</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td><span class="badge bg-danger">O-</span></td><td>O-</td></tr>
+                                <tr><td><span class="badge bg-danger">O+</span></td><td>O-, O+</td></tr>
+                                <tr><td><span class="badge bg-danger">A-</span></td><td>O-, A-</td></tr>
+                                <tr><td><span class="badge bg-danger">A+</span></td><td>O-, O+, A-, A+</td></tr>
+                                <tr><td><span class="badge bg-danger">B-</span></td><td>O-, B-</td></tr>
+                                <tr><td><span class="badge bg-danger">B+</span></td><td>O-, O+, B-, B+</td></tr>
+                                <tr><td><span class="badge bg-danger">AB-</span></td><td>O-, A-, B-, AB-</td></tr>
+                                <tr><td><span class="badge bg-danger">AB+</span></td><td>All Blood Groups (Universal Recipient)</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CALL TO ACTION -->
+<section class="py-5" style="background: linear-gradient(135deg, #b30000 0%, #800000 100%); color: white;">
+    <div class="container text-center py-4">
+        <h2 class="fw-bold mb-3 text-white">Join the Lifesaving Community Today</h2>
+        <p class="text-white-50 mx-auto mb-4" style="max-width: 650px;">
+            Your registration takes less than 2 minutes. When an emergency strikes nearby, you could be the only compatible match who saves a life.
+        </p>
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <a href="{% url 'register_donor' %}" class="btn btn-light btn-lg text-danger fw-bold px-4">
+                <i class="fas fa-user-plus me-2"></i> Register as a Blood Donor
+            </a>
+            <a href="{% url 'register_requester' %}" class="btn btn-outline-light btn-lg fw-bold px-4">
+                <i class="fas fa-hospital me-2"></i> Register as a Requester
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

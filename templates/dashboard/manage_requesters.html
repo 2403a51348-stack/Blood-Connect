@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% block title %}Manage Requesters | BloodConnect Admin{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <div>
+            <h2 class="fw-bold mb-0">Requester Account Management</h2>
+            <p class="text-muted small mb-0">Manage hospital representatives and patient accounts</p>
+        </div>
+        <a href="{% url 'admin_dashboard' %}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-1"></i> Control Center
+        </a>
+    </div>
+
+    <!-- FILTER BAR -->
+    <div class="bc-card p-3 mb-4 bg-white">
+        <form method="get" class="row g-2 align-items-center">
+            <div class="col-md-6">
+                <input type="text" name="city" class="form-control form-select-sm" placeholder="Search by City" value="{{ selected_city|default:'' }}">
+            </div>
+            <div class="col-md-6 d-flex gap-2">
+                <button type="submit" class="btn btn-sm btn-primary-bc flex-grow-1">Search</button>
+                <a href="{% url 'manage_requesters' %}" class="btn btn-sm btn-light border">Reset</a>
+            </div>
+        </form>
+    </div>
+
+    <!-- REQUESTERS TABLE -->
+    <div class="bc-card bg-white shadow-sm">
+        <div class="bc-card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light small text-uppercase">
+                        <tr>
+                            <th>Requester Name</th>
+                            <th>Organization / Affiliation</th>
+                            <th>Contact Phone</th>
+                            <th>City & State</th>
+                            <th>Requests Created</th>
+                            <th>Account Status</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for r in requesters %}
+                            <tr>
+                                <td>
+                                    <strong class="text-dark">{{ r.full_name }}</strong>
+                                    <div class="small text-muted">{{ r.user.username }} &bull; {{ r.user.email }}</div>
+                                </td>
+                                <td>{{ r.organization_name|default:"Individual / Family" }}</td>
+                                <td>{{ r.phone }}</td>
+                                <td>{{ r.city }}, {{ r.state }}</td>
+                                <td><span class="badge bg-secondary">{{ r.user.blood_requests.count }} Request(s)</span></td>
+                                <td>
+                                    {% if r.user.is_active %}
+                                        <span class="badge bg-success">Active</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">Deactivated</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-end">
+                                    <form method="post" action="{% url 'toggle_user_active' r.user.id %}" class="d-inline">
+                                        {% csrf_token %}
+                                        {% if r.user.is_active %}
+                                            <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Deactivate this requester account?');">
+                                                Deactivate
+                                            </button>
+                                        {% else %}
+                                            <button type="submit" class="btn btn-sm btn-outline-success" onclick="return confirm('Activate this requester account?');">
+                                                Activate
+                                            </button>
+                                        {% endif %}
+                                    </form>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr><td colspan="7" class="text-center text-muted py-4">No requesters found.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

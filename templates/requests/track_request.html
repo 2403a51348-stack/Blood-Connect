@@ -1,0 +1,213 @@
+{% extends 'base.html' %}
+{% block title %}Track Request {{ request_obj.request_id }} | BloodConnect{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- BREADCRUMB & HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+        <div>
+            <span class="text-danger small fw-bold text-uppercase">Live Emergency Tracking</span>
+            <h2 class="fw-bold mb-0">Request: {{ request_obj.request_id }}</h2>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="{% url 'matching_results' request_obj.id %}" class="btn btn-outline-danger">
+                <i class="fas fa-users-viewfinder me-1"></i> View Matching Donors
+            </a>
+            {% if is_requester or user.is_staff %}
+                {% if request_obj.is_active %}
+                    <form method="post" action="{% url 'complete_request' request_obj.id %}" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-success" onclick="return confirm('Mark this blood request as successfully completed?');">
+                            <i class="fas fa-check me-1"></i> Mark Completed
+                        </button>
+                    </form>
+                    <form method="post" action="{% url 'cancel_request' request_obj.id %}" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-outline-secondary" onclick="return confirm('Are you sure you want to cancel this request?');">
+                            <i class="fas fa-ban me-1"></i> Cancel Request
+                        </button>
+                    </form>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- MEDICAL DISCLAIMER -->
+    <div class="medical-disclaimer-box">
+        <i class="fas fa-triangle-exclamation"></i>
+        <div>
+            <strong>Transfusion Safety Reminder:</strong> {{ disclaimer }}
+        </div>
+    </div>
+
+    <!-- TRACKING STEPPER PROGRESS -->
+    <div class="bc-card p-4 mb-4 bg-white shadow-sm">
+        <h5 class="fw-bold mb-3 text-dark">Request Coordination Timeline</h5>
+        <div class="tracking-stepper">
+            <!-- Step 1 -->
+            <div class="tracking-step completed">
+                <div class="tracking-step-circle"><i class="fas fa-check"></i></div>
+                <div class="tracking-step-title">Created</div>
+                <small class="text-muted">{{ request_obj.created_at|date:"d M, H:i" }}</small>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="tracking-step {% if request_obj.status != 'PENDING' %}completed{% else %}active{% endif %}">
+                <div class="tracking-step-circle">
+                    {% if request_obj.status != 'PENDING' %}<i class="fas fa-check"></i>{% else %}2{% endif %}
+                </div>
+                <div class="tracking-step-title">Donors Contacted</div>
+                <small class="text-muted">Algorithm Outreach</small>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="tracking-step {% if request_obj.status in 'ACCEPTED,IN_PROGRESS,COMPLETED' %}completed{% elif request_obj.status == 'DONOR_CONTACTED' %}active{% endif %}">
+                <div class="tracking-step-circle">
+                    {% if request_obj.status in 'ACCEPTED,IN_PROGRESS,COMPLETED' %}<i class="fas fa-check"></i>{% else %}3{% endif %}
+                </div>
+                <div class="tracking-step-title">Donor Accepted</div>
+                <small class="text-muted">Direct Confirmation</small>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="tracking-step {% if request_obj.status == 'COMPLETED' %}completed{% elif request_obj.status == 'ACCEPTED' or request_obj.status == 'IN_PROGRESS' %}active{% endif %}">
+                <div class="tracking-step-circle">
+                    {% if request_obj.status == 'COMPLETED' %}<i class="fas fa-check"></i>{% else %}4{% endif %}
+                </div>
+                <div class="tracking-step-title">Hospital Verification</div>
+                <small class="text-muted">Cross-Matching</small>
+            </div>
+
+            <!-- Step 5 -->
+            <div class="tracking-step {% if request_obj.status == 'COMPLETED' %}completed{% endif %}">
+                <div class="tracking-step-circle">
+                    {% if request_obj.status == 'COMPLETED' %}<i class="fas fa-check"></i>{% else %}5{% endif %}
+                </div>
+                <div class="tracking-step-title">Fulfilled</div>
+                <small class="text-muted">Life Saved</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- REQUEST SUMMARY & DONOR RESPONSES -->
+    <div class="row g-4">
+        <!-- Request Details -->
+        <div class="col-lg-5">
+            <div class="bc-card p-4 h-100 bg-white">
+                <h5 class="fw-bold mb-3 border-bottom pb-2 text-dark">
+                    <i class="fas fa-file-medical text-danger me-2"></i>Patient & Clinical Details
+                </h5>
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <span class="badge-blood badge-blood-lg">{{ request_obj.blood_group }}</span>
+                    <div>
+                        <h4 class="fw-bold mb-0 text-dark">{{ request_obj.patient_name }}</h4>
+                        <span class="badge badge-urgency-{{ request_obj.urgency|lower }} mt-1">
+                            {{ request_obj.get_urgency_display }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="text-secondary small d-flex flex-column gap-2 mb-3">
+                    <div><i class="fas fa-cubes text-muted me-2"></i><strong>Units Required:</strong> {{ request_obj.units_required }} Unit(s)</div>
+                    <div><i class="fas fa-hospital text-danger me-2"></i><strong>Hospital:</strong> {{ request_obj.hospital_name }}</div>
+                    <div><i class="fas fa-location-dot text-muted me-2"></i><strong>Address:</strong> {{ request_obj.hospital_address }}, {{ request_obj.city }}, {{ request_obj.state }}</div>
+                    <div><i class="fas fa-user-tag text-muted me-2"></i><strong>Coordinator:</strong> {{ request_obj.contact_name }} ({{ request_obj.contact_phone }})</div>
+                    <div><i class="fas fa-clock text-muted me-2"></i><strong>Current Status:</strong> <span class="badge badge-status-{{ request_obj.status|lower }}">{{ request_obj.get_status_display }}</span></div>
+                </div>
+
+                {% if request_obj.additional_notes %}
+                    <div class="p-3 bg-light rounded border small">
+                        <strong>Additional Notes:</strong>
+                        <p class="mb-0 text-muted mt-1">{{ request_obj.additional_notes }}</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Contacted Donors & Responses -->
+        <div class="col-lg-7">
+            <div class="bc-card p-4 h-100 bg-white">
+                <h5 class="fw-bold mb-3 border-bottom pb-2 text-dark">
+                    <i class="fas fa-users-rays text-danger me-2"></i>Contacted Donors & Responses
+                </h5>
+
+                {% if matches %}
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light small text-uppercase">
+                                <tr>
+                                    <th>Donor</th>
+                                    <th>Blood</th>
+                                    <th>Status</th>
+                                    <th>Contact Info</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for m in matches %}
+                                    <tr>
+                                        <td>
+                                            <strong>{{ m.donor.full_name }}</strong>
+                                            <div class="small text-muted">{{ m.donor.city }}</div>
+                                        </td>
+                                        <td><span class="badge bg-danger">{{ m.donor.blood_group }}</span></td>
+                                        <td>
+                                            {% if m.status == 'ACCEPTED' %}
+                                                <span class="badge bg-success"><i class="fas fa-check-circle me-1"></i> Accepted</span>
+                                            {% elif m.status == 'DECLINED' %}
+                                                <span class="badge bg-secondary"><i class="fas fa-xmark me-1"></i> Declined</span>
+                                            {% elif m.status == 'CONTACTED' %}
+                                                <span class="badge bg-warning text-dark"><i class="fas fa-clock me-1"></i> Contacted</span>
+                                            {% else %}
+                                                <span class="badge bg-info">{{ m.get_status_display }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if m.status == 'ACCEPTED' %}
+                                                <a href="tel:{{ m.donor.phone }}" class="btn btn-sm btn-success fw-bold">
+                                                    <i class="fas fa-phone me-1"></i> {{ m.donor.phone }}
+                                                </a>
+                                            {% else %}
+                                                <span class="text-muted small"><i class="fas fa-lock me-1"></i> Revealed on Accept</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-4 text-muted">
+                        <p>No donors have been contacted yet for this request.</p>
+                        <a href="{% url 'matching_results' request_obj.id %}" class="btn btn-outline-bc btn-sm">
+                            <i class="fas fa-search me-1"></i> Find & Contact Donors
+                        </a>
+                    </div>
+                {% endif %}
+
+                <!-- Donor Responses Feed -->
+                {% if responses %}
+                    <h6 class="fw-bold mt-4 pt-3 border-top text-dark">Donor Response Remarks:</h6>
+                    <div class="d-flex flex-column gap-2 mt-2">
+                        {% for r in responses %}
+                            <div class="p-2 rounded bg-light border small">
+                                <div class="d-flex justify-content-between">
+                                    <strong>{{ r.donor.full_name }} ({{ r.donor.blood_group }})</strong>
+                                    <span class="text-muted">{{ r.responded_at|date:"d M, H:i" }}</span>
+                                </div>
+                                <div class="mt-1">
+                                    <span class="badge {% if r.response == 'ACCEPTED' %}bg-success{% else %}bg-secondary{% endif %} me-1">
+                                        {{ r.get_response_display }}
+                                    </span>
+                                    {% if r.remarks %}
+                                        <span>"{{ r.remarks }}"</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% block title %}About Us | BloodConnect{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row align-items-center g-5 mb-5">
+        <div class="col-lg-6">
+            <span class="text-danger fw-bold text-uppercase small">About BloodConnect</span>
+            <h1 class="fw-bold mb-3">Connecting Compassionate Donors with Critical Patients</h1>
+            <p class="text-secondary leading-relaxed">
+                BloodConnect was created to eliminate the agonizing delay often experienced by families and emergency rooms searching for compatible blood donors in moments of trauma, pediatric surgery, cancer treatment, and emergency labor.
+            </p>
+            <p class="text-secondary leading-relaxed">
+                Traditional blood banks frequently face seasonal shortages of rare blood phenotypes (such as O- and AB-). BloodConnect provides an agile software-based coordination layer that helps patients discover voluntary donors in their immediate geographical vicinity.
+            </p>
+        </div>
+        <div class="col-lg-6">
+            <div class="bc-card p-4 shadow-sm bg-white border-top border-4 border-danger">
+                <h4 class="fw-bold text-dark mb-3"><i class="fas fa-bullseye text-danger me-2"></i>Our Mission & Core Pillars</h4>
+                <div class="d-flex align-items-start gap-3 mb-3">
+                    <div class="badge-blood-sm bg-danger text-white rounded-circle"><i class="fas fa-clock"></i></div>
+                    <div>
+                        <h6 class="fw-bold mb-1">Time-Critical Velocity</h6>
+                        <p class="small text-muted mb-0">Reducing preliminary donor outreach from hours of frantic phone calls to instant ranked notifications.</p>
+                    </div>
+                </div>
+                <div class="d-flex align-items-start gap-3 mb-3">
+                    <div class="badge-blood-sm bg-danger text-white rounded-circle"><i class="fas fa-shield"></i></div>
+                    <div>
+                        <h6 class="fw-bold mb-1">Privacy & Donor Dignity</h6>
+                        <p class="small text-muted mb-0">Donor phone numbers and personal addresses are kept secure and only shared when a donation request is explicitly accepted.</p>
+                    </div>
+                </div>
+                <div class="d-flex align-items-start gap-3">
+                    <div class="badge-blood-sm bg-danger text-white rounded-circle"><i class="fas fa-laptop-medical"></i></div>
+                    <div>
+                        <h6 class="fw-bold mb-1">Algorithmic Transparency</h6>
+                        <p class="small text-muted mb-0">Clear explanation breakdown for every donor match based on clinical red-cell compatibility and geographic proximity.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- STATS CALLOUT -->
+    <div class="row g-4 text-center my-4">
+        <div class="col-md-3">
+            <div class="bc-card p-4">
+                <h2 class="fw-bold text-danger mb-1">100%</h2>
+                <div class="text-muted small">Software-Based & Independent</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="bc-card p-4">
+                <h2 class="fw-bold text-danger mb-1">&lt; 5 Min</h2>
+                <div class="text-muted small">Average Match Generation</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="bc-card p-4">
+                <h2 class="fw-bold text-danger mb-1">8</h2>
+                <div class="text-muted small">Standard ABO/Rh Blood Groups</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="bc-card p-4">
+                <h2 class="fw-bold text-danger mb-1">24/7</h2>
+                <div class="text-muted small">Real-Time Notification Delivery</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MEDICAL DISCLAIMER -->
+    <div class="medical-disclaimer-box mt-5">
+        <i class="fas fa-triangle-exclamation"></i>
+        <div>
+            <strong>Important Clinical Notice:</strong> BloodConnect operates exclusively as a preliminary communication and discovery platform. Software matches do not certify infectious disease clearance or cross-matching compatibility. All transfusions must adhere strictly to blood transfusion safety regulations and be verified by licensed blood bank technicians.
+        </div>
+    </div>
+</div>
+{% endblock %}
