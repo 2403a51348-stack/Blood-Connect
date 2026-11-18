@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BloodConnect | Emergency Blood Donor Matching & Coordination System</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <style>
+        :root {
+            --bc-primary: #b30000;
+            --bc-primary-dark: #800000;
+            --bc-primary-light: #ff4d4d;
+            --bc-secondary: #ffffff;
+            --bc-dark: #1e293b;
+            --bc-body-bg: #f8fafc;
+            --bc-card-bg: #ffffff;
+            --bc-border-color: #e2e8f0;
+            --bc-text-muted: #64748b;
+            --bc-success: #10b981;
+            --bc-warning: #f59e0b;
+            --bc-font: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            --bc-radius: 12px;
+            --bc-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.06);
+            --bc-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -1px rgba(0, 0, 0, 0.05);
+            --bc-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+        }
+
+        body {
+            font-family: var(--bc-font);
+            background-color: var(--bc-body-bg);
+            color: var(--bc-dark);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        main { flex: 1 0 auto; }
+
+        .emergency-top-bar {
+            background: linear-gradient(90deg, #990000, #b30000);
+            color: #ffffff;
+            font-size: 0.85rem;
+            padding: 6px 0;
+            font-weight: 500;
+        }
+
+        .bc-navbar {
+            background: #ffffff;
+            border-bottom: 1px solid var(--bc-border-color);
+            box-shadow: var(--bc-shadow-sm);
+            padding: 0.8rem 0;
+        }
+
+        .bc-brand {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--bc-dark);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .bc-brand span { color: var(--bc-primary); }
+        .bc-brand i {
+            color: var(--bc-primary);
+            animation: heartBeat 2s infinite ease-in-out;
+        }
+        @keyframes heartBeat {
+            0%, 100% { transform: scale(1); }
+            15% { transform: scale(1.18); }
+            30% { transform: scale(1); }
+            45% { transform: scale(1.12); }
+        }
+
+        .nav-link {
+            font-weight: 500;
+            color: #475569 !important;
+            padding: 0.5rem 0.9rem !important;
+            transition: all 0.2s ease-in-out;
+            border-radius: 6px;
+        }
+        .nav-link:hover {
+            color: var(--bc-primary) !important;
+            background-color: rgba(179, 0, 0, 0.04);
+        }
+
+        .hero-section {
+            background: linear-gradient(180deg, #fff5f5 0%, #ffffff 100%);
+            padding: 4.5rem 0 3.5rem;
+            border-bottom: 1px solid #fee2e2;
+        }
+        .hero-title {
+            font-size: 2.75rem;
+            font-weight: 800;
+            line-height: 1.2;
+            color: #0f172a;
+            margin-bottom: 1.2rem;
+        }
+        .hero-title span { color: var(--bc-primary); }
+        .hero-subtitle {
+            font-size: 1.15rem;
+            color: var(--bc-text-muted);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .btn-primary-bc {
+            background-color: var(--bc-primary);
+            color: #ffffff !important;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem 1.6rem;
+            box-shadow: 0 4px 12px rgba(179, 0, 0, 0.25);
+            transition: all 0.2s;
+        }
+        .btn-primary-bc:hover {
+            background-color: var(--bc-primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(179, 0, 0, 0.35);
+        }
+        .btn-outline-bc {
+            background: transparent;
+            color: var(--bc-primary) !important;
+            border: 2px solid var(--bc-primary);
+            font-weight: 600;
+            border-radius: 8px;
+            padding: 0.7rem 1.6rem;
+            transition: all 0.2s;
+        }
+        .btn-outline-bc:hover {
+            background: var(--bc-primary);
+            color: #ffffff !important;
+            transform: translateY(-2px);
+        }
+
+        .hero-stats-box {
+            background: #ffffff;
+            border: 1px solid var(--bc-border-color);
+            border-radius: var(--bc-radius);
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: var(--bc-shadow);
+            transition: transform 0.2s;
+        }
+        .hero-stats-box:hover {
+            transform: translateY(-4px);
+        }
+        .hero-stats-number {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--bc-dark);
+        }
+        .hero-stats-label {
+            font-size: 0.85rem;
+            color: var(--bc-text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .badge-blood {
+            background: #ffe4e6;
+            color: var(--bc-primary);
+            font-weight: 800;
+            font-size: 1rem;
+            padding: 6px 12px;
+            border-radius: 8px;
+            border: 1px solid #fecdd3;
+        }
+
+        .bc-card {
+            background: #ffffff;
+            border: 1px solid var(--bc-border-color);
+            border-radius: var(--bc-radius);
+            box-shadow: var(--bc-shadow-sm);
+            transition: all 0.2s;
+        }
+        .bc-card:hover {
+            box-shadow: var(--bc-shadow);
+        }
+
+        .badge-urgency-emergency { background-color: #fee2e2; color: #991b1b; font-weight: 700; }
+        .badge-urgency-urgent { background-color: #fef3c7; color: #92400e; font-weight: 700; }
+        .badge-urgency-standard { background-color: #e0f2fe; color: #075985; font-weight: 700; }
+
+        .search-box {
+            background: #ffffff;
+            border: 1px solid #fed7aa;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--bc-shadow);
+        }
+
+        .footer {
+            background: #0f172a;
+            color: #cbd5e1;
+            padding: 3rem 0 1.5rem;
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TOP EMERGENCY HELPLINE BANNER -->
+    <div class="emergency-top-bar text-center">
+        <div class="container d-flex justify-content-between align-items-center flex-wrap">
+            <div>
+                <i class="fas fa-truck-medical me-1"></i>
+                <strong>National Emergency Helpline:</strong> Call <strong>112 / 108</strong> for immediate ambulance services.
+            </div>
+            <div class="d-none d-md-block">
+                <i class="fas fa-clock me-1"></i> 24x7 Digital Blood Coordination Support
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN NAVBAR -->
+    <nav class="navbar navbar-expand-lg bc-navbar sticky-top">
+        <div class="container">
+            <a class="bc-brand" href="#home">
+                <i class="fas fa-heart-pulse"></i>
+                <div>Blood<span>Connect</span></div>
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-3">
+                    <li class="nav-item"><a class="nav-link" href="#home"><i class="fas fa-house me-1"></i> Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#search-donors"><i class="fas fa-search me-1"></i> Find Donors</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#compatibility"><i class="fas fa-dna me-1"></i> Compatibility</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#how-it-works"><i class="fas fa-info-circle me-1"></i> How It Works</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#requests"><i class="fas fa-droplet me-1"></i> Active Requests</a></li>
+                </ul>
+
+                <div class="d-flex align-items-center gap-2">
+                    <button class="btn btn-outline-bc btn-sm" data-bs-toggle="modal" data-bs-target="#donorModal">
+                        <i class="fas fa-hand-holding-heart me-1"></i> Register as Donor
+                    </button>
+                    <button class="btn btn-primary-bc btn-sm" data-bs-toggle="modal" data-bs-target="#requestModal">
+                        <i class="fas fa-droplet me-1"></i> Request Blood
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <!-- HERO SECTION -->
+        <section id="home" class="hero-section">
+            <div class="container">
+                <div class="row align-items-center g-5">
+                    <div class="col-lg-7">
+                        <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-2 rounded-pill fw-bold mb-3">
+                            <i class="fas fa-bolt-lightning me-1"></i> Rapid Emergency Donor Discovery
+                        </span>
+                        <h1 class="hero-title">
+                            Every Drop Counts. <span>Connect Directly</span> with Emergency Blood Donors.
+                        </h1>
+                        <p class="hero-subtitle">
+                            BloodConnect bridges the critical time gap between hospital blood bank shortages and willing voluntary donors through intelligent, compatibility-aware matching algorithms.
+                        </p>
+
+                        <div class="d-flex flex-wrap gap-3">
+                            <button class="btn btn-primary-bc btn-lg px-4" data-bs-toggle="modal" data-bs-target="#requestModal">
+                                <i class="fas fa-droplet me-2"></i> Request Blood Now
+                            </button>
+                            <button class="btn btn-outline-bc btn-lg px-4" data-bs-toggle="modal" data-bs-target="#donorModal">
+                                <i class="fas fa-hand-holding-heart me-2"></i> Register as Donor
+                            </button>
+                        </div>
+
+                        <div class="mt-4 p-3 bg-white rounded border border-danger-subtle shadow-sm d-flex align-items-center gap-3">
+                            <div class="bg-danger text-white rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                <i class="fas fa-shield-heart"></i>
+                            </div>
+                            <div class="small text-muted">
+                                <strong>Clinical Preliminary Notice:</strong> Potential donors are matched by ABO/Rh red cell compatibility and location. Final cross-matching & screening is performed by hospital blood bank personnel.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-5">
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <div class="hero-stats-box">
+                                    <i class="fas fa-users text-danger fs-2 mb-2"></i>
+                                    <div class="hero-stats-number" id="stats-donors">248</div>
+                                    <div class="hero-stats-label">Registered Donors</div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="hero-stats-box">
+                                    <i class="fas fa-circle-check text-success fs-2 mb-2"></i>
+                                    <div class="hero-stats-number text-success" id="stats-available">192</div>
+                                    <div class="hero-stats-label">Available Now</div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="hero-stats-box">
+                                    <i class="fas fa-truck-fast text-warning fs-2 mb-2"></i>
+                                    <div class="hero-stats-number text-warning" id="stats-requests">14</div>
+                                    <div class="hero-stats-label">Active Requests</div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="hero-stats-box">
+                                    <i class="fas fa-heart text-danger fs-2 mb-2"></i>
+                                    <div class="hero-stats-number" id="stats-lives">560+</div>
+                                    <div class="hero-stats-label">Lives Impacted</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- LIVE DONOR SEARCH TOOL -->
+        <section id="search-donors" class="py-5 bg-white border-bottom">
+            <div class="container">
+                <div class="text-center max-w-700 mx-auto mb-4">
+                    <span class="text-danger fw-bold text-uppercase small">Real-Time Search</span>
+                    <h2 class="fw-bold">Find Compatible Blood Donors</h2>
+                    <p class="text-muted">Instant filter by blood group and city to locate ready voluntary donors.</p>
+                </div>
+
+                <div class="search-box mb-4">
+                    <div class="row g-3">
+                        <div class="col-md-5">
+                            <label class="form-label fw-semibold">Required Blood Group</label>
+                            <select id="filterBloodGroup" class="form-select form-select-lg">
+                                <option value="ALL">All Blood Groups</option>
+                                <option value="O+">O Positive (O+)</option>
+                                <option value="O-">O Negative (O-) - Universal Donor</option>
+                                <option value="A+">A Positive (A+)</option>
+                                <option value="A-">A Negative (A-)</option>
+                                <option value="B+">B Positive (B+)</option>
+                                <option value="B-">B Negative (B-)</option>
+                                <option value="AB+">AB Positive (AB+)</option>
+                                <option value="AB-">AB Negative (AB-)</option>
+                            </select>
+                        </div>
+                        <div class="col-md-5">
+                            <label class="form-label fw-semibold">City / Location</label>
+                            <input type="text" id="filterCity" class="form-select-lg form-control" placeholder="e.g. Warangal, Hyderabad, Bangalore...">
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end">
+                            <button class="btn btn-primary-bc btn-lg w-100" onclick="filterDonors()">
+                                <i class="fas fa-search me-1"></i> Search
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DONOR LIST RESULT -->
+                <div id="donorListContainer" class="row g-3">
+                    <!-- Populated by JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ACTIVE URGENT REQUESTS -->
+        <section id="requests" class="py-5 bg-light border-bottom">
+            <div class="container">
+                <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+                    <div>
+                        <span class="text-danger fw-bold text-uppercase small">Urgent Coordination</span>
+                        <h2 class="fw-bold mb-0">Active Emergency Blood Requests</h2>
+                    </div>
+                    <button class="btn btn-primary-bc btn-sm" data-bs-toggle="modal" data-bs-target="#requestModal">
+                        <i class="fas fa-plus me-1"></i> Post New Emergency Request
+                    </button>
+                </div>
+
+                <div id="requestsListContainer" class="row g-4">
+                    <!-- Populated by JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- COMPATIBILITY MATRIX -->
+        <section id="compatibility" class="py-5 bg-white border-top">
+            <div class="container">
+                <div class="row align-items-center g-5">
+                    <div class="col-lg-6">
+                        <span class="text-danger fw-bold text-uppercase small">Clinical Foundations</span>
+                        <h2 class="fw-bold">Red Blood Cell Transfusion Compatibility</h2>
+                        <p class="text-muted">
+                            BloodConnect implements clinical red blood cell compatibility matching:
+                        </p>
+                        <ul class="list-unstyled d-flex flex-column gap-2 text-secondary">
+                            <li><i class="fas fa-check-circle text-success me-2"></i><strong>O Negative (O-):</strong> Universal red cell donor. Can donate to all ABO/Rh blood groups.</li>
+                            <li><i class="fas fa-check-circle text-success me-2"></i><strong>AB Positive (AB+):</strong> Universal red cell recipient. Can receive red blood cells from all groups.</li>
+                            <li><i class="fas fa-check-circle text-success me-2"></i><strong>Rh Factor Rules:</strong> Rh-positive recipients can accept Rh+ or Rh- blood, while Rh-negative recipients strictly require Rh- blood.</li>
+                        </ul>
+
+                        <!-- INTERACTIVE CALCULATOR -->
+                        <div class="p-3 bg-light rounded border mt-3">
+                            <h6 class="fw-bold text-danger mb-2"><i class="fas fa-calculator me-2"></i>Quick Compatibility Checker:</h6>
+                            <div class="d-flex gap-2 align-items-center">
+                                <label class="small fw-semibold text-nowrap">Patient Blood Group:</label>
+                                <select id="checkerSelect" class="form-select form-select-sm" onchange="checkCompatibility()">
+                                    <option value="O-">O-</option>
+                                    <option value="O+" selected>O+</option>
+                                    <option value="A-">A-</option>
+                                    <option value="A+">A+</option>
+                                    <option value="B-">B-</option>
+                                    <option value="B+">B+</option>
+                                    <option value="AB-">AB-</option>
+                                    <option value="AB+">AB+</option>
+                                </select>
+                            </div>
+                            <div id="checkerResult" class="mt-2 small alert alert-info mb-0 py-2">
+                                <strong>Can safely receive blood from:</strong> O-, O+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="bc-card p-4 shadow-sm">
+                            <h5 class="fw-bold mb-3 text-dark"><i class="fas fa-table-cells text-danger me-2"></i>Compatibility Quick Reference</h5>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-sm text-center mb-0 align-middle">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Recipient Group</th>
+                                            <th>Can Receive Red Cells From</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td><span class="badge bg-danger">O-</span></td><td>O-</td></tr>
+                                        <tr><td><span class="badge bg-danger">O+</span></td><td>O-, O+</td></tr>
+                                        <tr><td><span class="badge bg-danger">A-</span></td><td>O-, A-</td></tr>
+                                        <tr><td><span class="badge bg-danger">A+</span></td><td>O-, O+, A-, A+</td></tr>
+                                        <tr><td><span class="badge bg-danger">B-</span></td><td>O-, B-</td></tr>
+                                        <tr><td><span class="badge bg-danger">B+</span></td><td>O-, O+, B-, B+</td></tr>
+                                        <tr><td><span class="badge bg-danger">AB-</span></td><td>O-, A-, B-, AB-</td></tr>
+                                        <tr><td><span class="badge bg-danger">AB+</span></td><td>All Blood Groups (Universal Recipient)</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- HOW IT WORKS -->
+        <section id="how-it-works" class="py-5 bg-light">
+            <div class="container">
+                <div class="text-center max-w-700 mx-auto mb-5">
+                    <span class="text-danger fw-bold text-uppercase small">Simple, Transparent Process</span>
+                    <h2 class="fw-bold">How BloodConnect Works</h2>
+                    <p class="text-muted">A structured three-step coordination workflow designed for speed and accountability.</p>
+                </div>
+
+                <div class="row g-4 text-center">
+                    <div class="col-md-4">
+                        <div class="bc-card p-4 h-100">
+                            <div class="bg-danger-subtle text-danger rounded-circle p-3 mx-auto mb-3" style="width: 65px; height: 65px; display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-file-waveform fs-3"></i>
+                            </div>
+                            <h5 class="fw-bold">1. Post Emergency Need</h5>
+                            <p class="text-muted small">
+                                Requesters or hospitals submit patient details, required units, blood group, hospital location, and urgency status.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="bc-card p-4 h-100">
+                            <div class="bg-danger-subtle text-danger rounded-circle p-3 mx-auto mb-3" style="width: 65px; height: 65px; display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-microchip fs-3"></i>
+                            </div>
+                            <h5 class="fw-bold">2. Intelligent Matching</h5>
+                            <p class="text-muted small">
+                                Our algorithm evaluates red-cell compatibility, donor availability, distance, and activity score to rank eligible donors.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="bc-card p-4 h-100">
+                            <div class="bg-danger-subtle text-danger rounded-circle p-3 mx-auto mb-3" style="width: 65px; height: 65px; display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-bell fs-3"></i>
+                            </div>
+                            <h5 class="fw-bold">3. Rapid Coordination</h5>
+                            <p class="text-muted small">
+                                Donors receive instant in-app alerts, accept requests, and coordinate with the hospital for medical cross-matching.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA SECTION -->
+        <section class="py-5" style="background: linear-gradient(135deg, #b30000 0%, #800000 100%); color: white;">
+            <div class="container text-center py-4">
+                <h2 class="fw-bold mb-3 text-white">Join the Lifesaving Community Today</h2>
+                <p class="text-white-50 mx-auto mb-4" style="max-width: 650px;">
+                    Your voluntary registration takes less than 2 minutes. When an emergency strikes nearby, you could be the only compatible match who saves a life.
+                </p>
+                <div class="d-flex justify-content-center gap-3 flex-wrap">
+                    <button class="btn btn-light btn-lg text-danger fw-bold px-4" data-bs-toggle="modal" data-bs-target="#donorModal">
+                        <i class="fas fa-user-plus me-2"></i> Register as a Blood Donor
+                    </button>
+                    <button class="btn btn-outline-light btn-lg fw-bold px-4" data-bs-toggle="modal" data-bs-target="#requestModal">
+                        <i class="fas fa-hospital me-2"></i> Submit Emergency Request
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row g-4 mb-4">
+                <div class="col-md-4">
+                    <div class="bc-brand text-white mb-2">
+                        <i class="fas fa-heart-pulse text-danger"></i>
+                        <div>Blood<span class="text-danger">Connect</span></div>
+                    </div>
+                    <p class="small text-secondary">
+                        Web-Based Emergency Blood Donor Matching & Coordination System. Bridging donors and hospitals when seconds count.
+                    </p>
+                </div>
+                <div class="col-md-4">
+                    <h6 class="text-white fw-bold mb-3">Quick Navigation</h6>
+                    <ul class="list-unstyled small text-secondary d-flex flex-column gap-2">
+                        <li><a href="#home" class="text-secondary text-decoration-none">Home</a></li>
+                        <li><a href="#search-donors" class="text-secondary text-decoration-none">Find Donors</a></li>
+                        <li><a href="#compatibility" class="text-secondary text-decoration-none">Compatibility Rules</a></li>
+                        <li><a href="#how-it-works" class="text-secondary text-decoration-none">How It Works</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h6 class="text-white fw-bold mb-3">Emergency Contact</h6>
+                    <p class="small text-secondary mb-1"><i class="fas fa-phone text-danger me-2"></i>Helpline: 112 / 108</p>
+                    <p class="small text-secondary mb-1"><i class="fas fa-envelope text-danger me-2"></i>support@bloodconnect.org</p>
+                    <p class="small text-secondary"><i class="fas fa-code-branch text-danger me-2"></i>Full Stack Django & MySQL/SQLite</p>
+                </div>
+            </div>
+            <div class="border-top border-secondary pt-3 text-center small text-secondary">
+                &copy; 2026 BloodConnect System. Developed by 2403A51348.
+            </div>
+        </div>
+    </footer>
+
+    <!-- MODAL: REGISTER DONOR -->
+    <div class="modal fade" id="donorModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title fw-bold"><i class="fas fa-user-plus me-2"></i>Register as a Blood Donor</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-target="#donorModal" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="donorForm" onsubmit="handleDonorSubmit(event)">
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Full Name</label>
+                            <input type="text" class="form-control" id="donorName" required placeholder="John Doe">
+                        </div>
+                        <div class="row g-2 mb-3">
+                            <div class="col-6">
+                                <label class="form-label fw-semibold">Blood Group</label>
+                                <select class="form-select" id="donorBloodGroup" required>
+                                    <option value="O+">O Positive (O+)</option>
+                                    <option value="O-">O Negative (O-)</option>
+                                    <option value="A+">A Positive (A+)</option>
+                                    <option value="A-">A Negative (A-)</option>
+                                    <option value="B+">B Positive (B+)</option>
+                                    <option value="B-">B Negative (B-)</option>
+                                    <option value="AB+">AB Positive (AB+)</option>
+                                    <option value="AB-">AB Negative (AB-)</option>
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label fw-semibold">Phone Number</label>
+                                <input type="tel" class="form-control" id="donorPhone" required placeholder="+91 9876543210">
+                            </div>
+                        </div>
+                        <div class="row g-2 mb-3">
+                            <div class="col-6">
+                                <label class="form-label fw-semibold">City</label>
+                                <input type="text" class="form-control" id="donorCity" required placeholder="Warangal">
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label fw-semibold">State</label>
+                                <input type="text" class="form-control" id="donorState" required placeholder="Telangana">
+                            </div>
+                        </div>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="donorAvailable" checked>
+                            <label class="form-check-label small" for="donorAvailable">
+                                I am currently available and ready to respond to urgent blood requests.
+                            </label>
+                        </div>
+                        <button type="submit" class="btn btn-primary-bc w-100 py-2">Submit Donor Registration</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: EMERGENCY REQUEST -->
+    <div class="modal fade" id="requestModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title fw-bold"><i class="fas fa-droplet me-2"></i>Post Emergency Blood Request</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="requestForm" onsubmit="handleRequestSubmit(event)">
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Patient Name</label>
+                            <input type="text" class="form-control" id="patientName" required placeholder="Patient Name">
+                        </div>
+                        <div class="row g-2 mb-3">
+                            <div class="col-6">
+                                <label class="form-label fw-semibold">Blood Group</label>
+                                <select class="form-select" id="reqBloodGroup" required>
+                                    <option value="O+">O Positive (O+)</option>
+                                    <option value="O-">O Negative (O-)</option>
+                                    <option value="A+">A Positive (A+)</option>
+                                    <option value="A-">A Negative (A-)</option>
+                                    <option value="B+">B Positive (B+)</option>
+                                    <option value="B-">B Negative (B-)</option>
+                                    <option value="AB+">AB Positive (AB+)</option>
+                                    <option value="AB-">AB Negative (AB-)</option>
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label fw-semibold">Units Required</label>
+                                <input type="number" class="form-control" id="reqUnits" value="2" min="1" max="10" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Hospital Name</label>
+                            <input type="text" class="form-control" id="reqHospital" required placeholder="Apollo / MGM Hospital">
+                        </div>
+                        <div class="row g-2 mb-3">
+                            <div class="col-6">
+                                <label class="form-label fw-semibold">City</label>
+                                <input type="text" class="form-control" id="reqCity" required placeholder="Warangal">
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label fw-semibold">Urgency Level</label>
+                                <select class="form-select" id="reqUrgency" required>
+                                    <option value="EMERGENCY">Emergency (Within 2 hrs)</option>
+                                    <option value="URGENT">Urgent (Within 6 hrs)</option>
+                                    <option value="STANDARD">Standard (Within 24 hrs)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary-bc w-100 py-2">Broadcast Emergency Request</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Compatibility Matrix Logic
+        const compatibilityMap = {
+            'O-': ['O-'],
+            'O+': ['O-', 'O+'],
+            'A-': ['O-', 'A-'],
+            'A+': ['O-', 'O+', 'A-', 'A+'],
+            'B-': ['O-', 'B-'],
+            'B+': ['O-', 'O+', 'B-', 'B+'],
+            'AB-': ['O-', 'A-', 'B-', 'AB-'],
+            'AB+': ['O-', 'O+', 'A-', 'A+', 'B-', 'B+', 'AB-', 'AB+']
+        };
+
+        function checkCompatibility() {
+            const selected = document.getElementById('checkerSelect').value;
+            const compatible = compatibilityMap[selected] || [];
+            document.getElementById('checkerResult').innerHTML = 
+                `<strong>${selected} can receive red cells from:</strong> ${compatible.join(', ')}`;
+        }
+
+        // Sample initial Donors
+        let donors = [
+            { id: 1, name: "Rahul Sharma", blood_group: "O+", city: "Warangal", state: "Telangana", phone: "+91 98480 12345", available: true, score: 98 },
+            { id: 2, name: "Priya Patel", blood_group: "O-", city: "Hyderabad", state: "Telangana", phone: "+91 97010 45678", available: true, score: 99 },
+            { id: 3, name: "Vikram Reddy", blood_group: "A+", city: "Warangal", state: "Telangana", phone: "+91 99890 87654", available: true, score: 95 },
+            { id: 4, name: "Ananya Deshmukh", blood_group: "B+", city: "Warangal", state: "Telangana", phone: "+91 94400 32109", available: true, score: 92 },
+            { id: 5, name: "Karthik Verma", blood_group: "AB+", city: "Hyderabad", state: "Telangana", phone: "+91 93910 65432", available: true, score: 94 },
+            { id: 6, name: "Sneha Nair", blood_group: "A-", city: "Bangalore", state: "Karnataka", phone: "+91 98200 11223", available: true, score: 97 }
+        ];
+
+        // Sample initial Urgent Requests
+        let urgentRequests = [
+            { id: "REQ-2026-001", patient: "Suresh Kumar", blood_group: "O-", units: 2, hospital: "MGM District Hospital", city: "Warangal", urgency: "Emergency", status: "Active" },
+            { id: "REQ-2026-002", patient: "Kavitha Rani", blood_group: "B+", units: 1, hospital: "Kakatiya Medical Institute", city: "Warangal", urgency: "Urgent", status: "Matching" },
+            { id: "REQ-2026-003", patient: "Rajesh Goud", blood_group: "A+", units: 3, hospital: "Apollo Multi-Specialty", city: "Hyderabad", urgency: "Emergency", status: "Active" }
+        ];
+
+        function renderDonors(list) {
+            const container = document.getElementById('donorListContainer');
+            if (list.length === 0) {
+                container.innerHTML = `
+                    <div class="col-12 text-center py-5">
+                        <i class="fas fa-user-slash text-muted fs-1 mb-3"></i>
+                        <h5 class="text-secondary">No donors matched this specific filter.</h5>
+                        <p class="text-muted small">Try selecting another blood group or clearing the city filter.</p>
+                    </div>`;
+                return;
+            }
+
+            container.innerHTML = list.map(d => `
+                <div class="col-md-6 col-lg-4">
+                    <div class="bc-card p-3 h-100">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="badge-blood">${d.blood_group}</span>
+                            <span class="badge ${d.available ? 'bg-success' : 'bg-secondary'}">${d.available ? 'Available' : 'Unavailable'}</span>
+                        </div>
+                        <h6 class="fw-bold mb-1">${d.name}</h6>
+                        <p class="small text-muted mb-2"><i class="fas fa-location-dot me-1 text-danger"></i>${d.city}, ${d.state}</p>
+                        <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+                            <span class="small text-muted"><i class="fas fa-phone me-1"></i>${d.phone}</span>
+                            <button class="btn btn-sm btn-outline-bc" onclick="alert('Notification alert sent to donor: ' + '${d.name}')">
+                                <i class="fas fa-paper-plane me-1"></i> Contact
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterDonors() {
+            const bg = document.getElementById('filterBloodGroup').value;
+            const city = document.getElementById('filterCity').value.trim().toLowerCase();
+
+            const filtered = donors.filter(d => {
+                const matchBg = (bg === 'ALL') || (d.blood_group === bg);
+                const matchCity = !city || d.city.toLowerCase().includes(city);
+                return matchBg && matchCity;
+            });
+            renderDonors(filtered);
+        }
+
+        function renderRequests() {
+            const container = document.getElementById('requestsListContainer');
+            container.innerHTML = urgentRequests.map(r => `
+                <div class="col-md-6 col-lg-4">
+                    <div class="bc-card h-100 p-3 border-start border-4 border-danger">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="badge-blood">${r.blood_group}</span>
+                                <div>
+                                    <h6 class="fw-bold mb-0 text-dark">${r.patient}</h6>
+                                    <span class="text-muted small"><i class="fas fa-hashtag me-1"></i>${r.id}</span>
+                                </div>
+                            </div>
+                            <span class="badge badge-urgency-${r.urgency.toLowerCase()} px-2 py-1 rounded small">
+                                ${r.urgency}
+                            </span>
+                        </div>
+                        <div class="mt-2 text-secondary small">
+                            <p class="mb-1"><i class="fas fa-hospital me-2 text-danger"></i><strong>${r.hospital}</strong></p>
+                            <p class="mb-1"><i class="fas fa-location-dot me-2 text-muted"></i>${r.city}</p>
+                            <p class="mb-2"><i class="fas fa-cubes me-2 text-muted"></i>Units Required: <strong>${r.units}</strong></p>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+                            <span class="badge bg-success">${r.status}</span>
+                            <button class="btn btn-sm btn-primary-bc" onclick="alert('Thank you! Hospital coordination contact details sent.')">
+                                Donate For This
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function handleDonorSubmit(e) {
+            e.preventDefault();
+            const newDonor = {
+                id: donors.length + 1,
+                name: document.getElementById('donorName').value,
+                blood_group: document.getElementById('donorBloodGroup').value,
+                phone: document.getElementById('donorPhone').value,
+                city: document.getElementById('donorCity').value,
+                state: document.getElementById('donorState').value,
+                available: document.getElementById('donorAvailable').checked,
+                score: 100
+            };
+            donors.unshift(newDonor);
+            renderDonors(donors);
+            
+            const countEl = document.getElementById('stats-donors');
+            countEl.innerText = parseInt(countEl.innerText) + 1;
+
+            const modalEl = document.getElementById('donorModal');
+            bootstrap.Modal.getInstance(modalEl).hide();
+            document.getElementById('donorForm').reset();
+            alert('🎉 Congratulations! You have been registered successfully as a voluntary donor.');
+        }
+
+        function handleRequestSubmit(e) {
+            e.preventDefault();
+            const req = {
+                id: 'REQ-2026-' + String(urgentRequests.length + 1).padStart(3, '0'),
+                patient: document.getElementById('patientName').value,
+                blood_group: document.getElementById('reqBloodGroup').value,
+                units: document.getElementById('reqUnits').value,
+                hospital: document.getElementById('reqHospital').value,
+                city: document.getElementById('reqCity').value,
+                urgency: document.getElementById('reqUrgency').value,
+                status: "Active"
+            };
+            urgentRequests.unshift(req);
+            renderRequests();
+
+            const countEl = document.getElementById('stats-requests');
+            countEl.innerText = parseInt(countEl.innerText) + 1;
+
+            const modalEl = document.getElementById('requestModal');
+            bootstrap.Modal.getInstance(modalEl).hide();
+            document.getElementById('requestForm').reset();
+            alert(`🚨 Request ${req.id} broadcasted! Found 4 compatible donors nearby in ${req.city}.`);
+        }
+
+        // Initial render on page load
+        renderDonors(donors);
+        renderRequests();
+    </script>
+</body>
+</html>
